@@ -1,0 +1,90 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+def siteUrl = 'https://github.com/ChaosLeong/PinView'
+def issueUrl = 'https://github.com/ChaosLeong/PinView/issues'
+def gitUrl = 'git@github.com:ChaosLeong/PinView.git'
+
+group = "com.chaos.view"
+version = "1.0.0"
+
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                name 'PinView'
+                description 'Provides a widget for enter PIN/OTP/password etc.'
+                url siteUrl
+
+                packaging 'aar'
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+                developers {
+                    developer {
+                        id 'ChaosLeong'
+                        name 'Chaos Leong'
+                        email 'lgf42031@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+    exclude '**/BuildConfig.class'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.compile
+    failOnError false
+    exclude '**/BuildConfig.class'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "PinView"    //发布到JCenter上的项目名字
+        websiteUrl = siteUrl
+        issueTrackerUrl = issueUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
+
+javadoc {
+    options{
+        encoding "UTF-8"
+        charSet 'UTF-8'
+    }
+}
