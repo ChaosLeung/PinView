@@ -21,16 +21,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context="com.chaos.view.example.MainActivity">
 
     <com.chaos.view.PinView
         android:id="@+id/firstPinView"
+        style="@style/PinWidget.PinView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:padding="5dp"
+        android:padding="@dimen/common_padding"
         android:text="12345"
         android:textColor="@color/text_colors"
         android:textSize="18sp"
@@ -39,13 +40,41 @@
         app:boxCount="5"
         app:boxHeight="48dp"
         app:boxMargin="4dp"
-        app:boxRadius="4dp"
-        style="@style/PinWidget.PinView" />
+        app:boxRadius="4dp" />
 
     <com.chaos.view.PinView
         android:id="@+id/secondPinView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp" />
+        android:layout_margin="@dimen/common_padding"
+        android:inputType="textPassword"
+        android:text="View" />
+
+    <com.chaos.view.PinView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:padding="@dimen/common_padding"
+        android:text="PIN"
+        android:textColor="@color/colorAccent"
+        app:boxCount="3"/>
+
+    <com.chaos.view.PinView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:padding="@dimen/common_padding"
+        android:text="您好"
+        android:textColor="@color/colorPrimary"
+        app:boxCount="2" />
+
+    <com.chaos.view.PinView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberPassword"
+        android:padding="@dimen/common_padding"
+        android:text="1"
+        android:textColor="@color/colorAccent"
+        app:boxCount="1" />
 
 </LinearLayout>

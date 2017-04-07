@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2017 Chaos Leong
   ~
@@ -15,8 +16,5 @@
   -->
 
 <resources>
-    <string name="app_name">PinView</string>
-    <string name="password_label">Password:</string>
-    <string name="pin_label">PIN:</string>
-    <string name="label_second_activity">SecondActivity</string>
+    <dimen name="common_padding">5dp</dimen>
 </resources>

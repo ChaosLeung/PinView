@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2017 Chaos Leong
   ~
@@ -14,9 +15,11 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <string name="app_name">PinView</string>
-    <string name="password_label">Password:</string>
-    <string name="pin_label">PIN:</string>
-    <string name="label_second_activity">SecondActivity</string>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_open_second_act"
+        android:title="@string/label_second_activity"
+        app:showAsAction="ifRoom" />
+</menu>
