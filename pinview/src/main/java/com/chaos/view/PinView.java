@@ -133,10 +133,6 @@ public class PinView extends AppCompatEditText {
 
         setMaxLength(mPinBoxCount);
         mPaint.setStrokeWidth(mBorderWidth);
-        if (mBorderColor == null) {
-            mBorderColor = getTextColors();
-        }
-        setBorderColor(mBorderColor);
         setupAnimator();
 
         setCursorVisible(false);
@@ -242,7 +238,7 @@ public class PinView extends AppCompatEditText {
     protected void drawableStateChanged() {
         super.drawableStateChanged();
 
-        if (mBorderColor != null && mBorderColor.isStateful()) {
+        if (mBorderColor == null || mBorderColor.isStateful()) {
             updateColors();
         }
     }
@@ -428,7 +424,14 @@ public class PinView extends AppCompatEditText {
 
     private void updateColors() {
         boolean inval = false;
-        int color = mBorderColor.getColorForState(getDrawableState(), 0);
+
+        int color;
+        if (mBorderColor != null) {
+            color = mBorderColor.getColorForState(getDrawableState(), 0);
+        } else {
+            color = getCurrentTextColor();
+        }
+
         if (color != mCurBorderColor) {
             mCurBorderColor = color;
             inval = true;
