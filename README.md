@@ -87,6 +87,10 @@ or implement `PinWidget.PinView` style.
     style="@style/PinWidget.PinView" />
 ```
 
+## Thanks
+
+ * Inspired by [PasswordInput](https://github.com/EthanCo/PasswordInput) in [EthanCo](https://github.com/EthanCo)
+
 ## License
 
 
