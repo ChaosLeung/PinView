@@ -4,13 +4,21 @@ Provides a widget for enter PIN/OTP/password etc.
 
 ## Dependency
 
+``` Groovy
+repositories {
+    maven {
+        jcenter()
+    }
+}
+
 dependencies {
    compile 'com.chaos.view:pinview:1.0.0'
 }
+```
 
 ## Usage
 
-### Step 1
+### Step 1:
 
 Add PinView in your layout.
 
@@ -37,7 +45,7 @@ Add PinView in your layout.
 
 #### Java
 
-``` java
+``` Java
 PinView pinView = (PinView) findViewById(R.id.secondPinView);
 pinView.setTextColor(
         ResourcesCompat.getColor(getResources(), R.color.colorAccent, getTheme()));
@@ -55,7 +63,7 @@ pinView.setBorderWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_
 pinView.setAnimationEnable(true);// start animation when adding text
 ```
 
-### Step 2
+### Step 2:
 
 Specifies `pinViewStyle` in your theme,
 
