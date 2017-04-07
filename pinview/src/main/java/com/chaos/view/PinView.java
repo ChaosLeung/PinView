@@ -545,6 +545,7 @@ public class PinView extends AppCompatEditText {
      */
     public void setBoxCount(int len) {
         mPinBoxCount = len;
+        setMaxLength(len);
         requestLayout();
     }
 
