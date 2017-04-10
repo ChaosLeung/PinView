@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.0.0'
+   compile 'com.chaos.view:pinview:1.0.1'
 }
 ```
 
