@@ -370,7 +370,7 @@ public class PinView extends AppCompatEditText {
         paint.getTextBounds(getText().toString(), i, i + 1, mTextRect);
         // 1, Rect(4, -39, 20, 0)
         // 您, Rect(2, -47, 51, 3)
-        // *, Rect(0, -39, 23, -16)1
+        // *, Rect(0, -39, 23, -16)
         // =, Rect(4, -26, 26, -10)
         // -, Rect(1, -19, 14, -14)
         // +, Rect(2, -32, 29, -3)
