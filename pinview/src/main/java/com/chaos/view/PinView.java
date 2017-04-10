@@ -45,12 +45,12 @@ import android.view.inputmethod.EditorInfo;
  * @author Chaos Leong
  *         01/04/2017
  *
- * <p>
- * <b>XML attributes</b>
- * <p>
- * See <a href="https://developer.android.com/reference/android/R.styleable.html#EditText">EditText Attributes</a>,
- * <a href="https://developer.android.com/reference/android/R.styleable.html#TextView">TextView Attributes</a>,
- * <a href="https://developer.android.com/reference/android/R.styleable.html#View">View Attributes</a>
+ *         <p>
+ *         <b>XML attributes</b>
+ *         <p>
+ *         See <a href="https://developer.android.com/reference/android/R.styleable.html#EditText">EditText Attributes</a>,
+ *         <a href="https://developer.android.com/reference/android/R.styleable.html#TextView">TextView Attributes</a>,
+ *         <a href="https://developer.android.com/reference/android/R.styleable.html#View">View Attributes</a>
  * @attr ref R.styleable#PinView_boxCount
  * @attr ref R.styleable#PinView_boxHeight
  * @attr ref R.styleable#PinView_boxRadius
@@ -247,38 +247,24 @@ public class PinView extends AppCompatEditText {
     protected void onDraw(Canvas canvas) {
         canvas.save();
 
-        mPaint.setColor(mCurBorderColor);
-        mPaint.setStrokeWidth(mBorderWidth);
-        mTextPaint.setColor(getCurrentTextColor());
-
-        drawPinBox(canvas);
+        updatePaints();
+        drawPinView(canvas);
 
         canvas.restore();
     }
 
-    private void drawPinBox(Canvas canvas) {
+    private void updatePaints() {
+        mPaint.setColor(mCurBorderColor);
+        mPaint.setStrokeWidth(mBorderWidth);
+        mTextPaint.setColor(getCurrentTextColor());
+    }
+
+    private void drawPinView(Canvas canvas) {
         for (int i = 0; i < mPinBoxCount; i++) {
             updateBoxRectF(i);
             updateCenterPoint();
 
-            boolean l, r;
-            l = r = true;
-            if (mPinBoxMargin == 0) {
-                if (mPinBoxCount > 1) {
-                    if (i == 0) {
-                        // draw only left round
-                        r = false;
-                    } else if (i == mPinBoxCount - 1) {
-                        // draw only right round
-                        l = false;
-                    } else {
-                        // draw rect
-                        l = r = false;
-                    }
-                }
-            }
-            updateRoundRectPath(mBoxBorderRect, mPinBoxRadius, mPinBoxRadius, l, r);
-            canvas.drawPath(mPath, mPaint);
+            drawPinBox(canvas, i);
 
             if (getText().length() > i) {
                 if (DBG) {
@@ -292,6 +278,27 @@ public class PinView extends AppCompatEditText {
                 }
             }
         }
+    }
+
+    private void drawPinBox(Canvas canvas, int i) {
+        boolean l, r;
+        l = r = true;
+        if (mPinBoxMargin == 0) {
+            if (mPinBoxCount > 1) {
+                if (i == 0) {
+                    // draw only left round
+                    r = false;
+                } else if (i == mPinBoxCount - 1) {
+                    // draw only right round
+                    l = false;
+                } else {
+                    // draw rect
+                    l = r = false;
+                }
+            }
+        }
+        updateRoundRectPath(mBoxBorderRect, mPinBoxRadius, mPinBoxRadius, l, r);
+        canvas.drawPath(mPath, mPaint);
     }
 
     private void updateRoundRectPath(RectF rectF, float rx, float ry, boolean l, boolean r) {
