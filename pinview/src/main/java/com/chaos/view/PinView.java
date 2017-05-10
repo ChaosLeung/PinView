@@ -45,12 +45,12 @@ import android.view.inputmethod.EditorInfo;
  * @author Chaos Leong
  *         01/04/2017
  *
- *         <p>
- *         <b>XML attributes</b>
- *         <p>
- *         See <a href="https://developer.android.com/reference/android/R.styleable.html#EditText">EditText Attributes</a>,
- *         <a href="https://developer.android.com/reference/android/R.styleable.html#TextView">TextView Attributes</a>,
- *         <a href="https://developer.android.com/reference/android/R.styleable.html#View">View Attributes</a>
+ * <p>
+ * <b>XML attributes</b>
+ * <p>
+ * See <a href="https://developer.android.com/reference/android/R.styleable.html#EditText">EditText Attributes</a>,
+ * <a href="https://developer.android.com/reference/android/R.styleable.html#TextView">TextView Attributes</a>,
+ * <a href="https://developer.android.com/reference/android/R.styleable.html#View">View Attributes</a>
  * @attr ref R.styleable#PinView_boxCount
  * @attr ref R.styleable#PinView_boxHeight
  * @attr ref R.styleable#PinView_boxRadius
