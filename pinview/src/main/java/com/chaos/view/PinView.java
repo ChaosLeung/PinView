@@ -267,11 +267,11 @@ public class PinView extends AppCompatEditText {
 
             drawPinBox(canvas, i);
 
-            if (getText().length() > i) {
-                if (DBG) {
-                    drawAnchorLine(canvas);
-                }
+            if (DBG) {
+                drawAnchorLine(canvas);
+            }
 
+            if (getText().length() > i) {
                 if (isPasswordInputType(getInputType())) {
                     drawCircle(canvas, i);
                 } else {
