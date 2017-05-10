@@ -30,9 +30,9 @@
         style="@style/PinWidget.PinView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:inputType="text"
         android:padding="@dimen/common_padding"
-        android:text="12345"
+        android:hint="Hint."
         android:textColor="@color/text_colors"
         android:textSize="18sp"
         app:borderColor="@color/border_colors"
@@ -47,8 +47,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/common_padding"
-        android:inputType="textPassword"
-        android:text="View" />
+        android:inputType="number"
+        android:text="1234" />
 
     <com.chaos.view.PinView
         android:layout_width="wrap_content"

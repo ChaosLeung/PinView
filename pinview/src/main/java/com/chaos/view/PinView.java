@@ -34,6 +34,7 @@ import android.support.annotation.Px;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.MovementMethod;
 import android.util.AttributeSet;
 import android.view.animation.DecelerateInterpolator;
@@ -276,6 +277,8 @@ public class PinView extends AppCompatEditText {
                 } else {
                     drawText(canvas, i);
                 }
+            } else if (!TextUtils.isEmpty(getHint()) && getHint().length() == mPinBoxCount) {
+                drawHint(canvas, i);
             }
         }
     }
@@ -374,18 +377,28 @@ public class PinView extends AppCompatEditText {
 
     private void drawText(Canvas canvas, int i) {
         Paint paint = getPaintByIndex(i);
-        paint.getTextBounds(getText().toString(), i, i + 1, mTextRect);
         // 1, Rect(4, -39, 20, 0)
         // 您, Rect(2, -47, 51, 3)
         // *, Rect(0, -39, 23, -16)
         // =, Rect(4, -26, 26, -10)
         // -, Rect(1, -19, 14, -14)
         // +, Rect(2, -32, 29, -3)
+        drawTextAtBox(canvas, paint, getText(), i);
+    }
+
+    private void drawHint(Canvas canvas, int i) {
+        Paint paint = getPaintByIndex(i);
+        paint.setColor(getCurrentHintTextColor());
+        drawTextAtBox(canvas, paint, getHint(), i);
+    }
+
+    private void drawTextAtBox(Canvas canvas, Paint paint, CharSequence text, int charAt) {
+        paint.getTextBounds(text.toString(), charAt, charAt + 1, mTextRect);
         float cx = mBoxCenterPoint.x;
         float cy = mBoxCenterPoint.y;
         float x = cx - Math.abs(mTextRect.width()) / 2 - mTextRect.left;
         float y = cy + Math.abs(mTextRect.height()) / 2 - mTextRect.bottom;// always center vertical
-        canvas.drawText(getText(), i, i + 1, x, y, paint);
+        canvas.drawText(text, charAt, charAt + 1, x, y, paint);
     }
 
     private void drawCircle(Canvas canvas, int i) {
