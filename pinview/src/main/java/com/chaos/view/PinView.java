@@ -182,6 +182,9 @@ public class PinView extends AppCompatEditText {
         } else {
             float boxesWidth = (mPinBoxCount - 1) * mPinBoxMargin + mPinBoxCount * boxHeight;
             width = Math.round(boxesWidth + getPaddingRight() + getPaddingLeft());
+            if (mPinBoxMargin == 0) {
+                width -= 2 * (mPinBoxCount - 1) * mBorderWidth;
+            }
         }
 
         if (heightMode == MeasureSpec.EXACTLY) {
@@ -366,8 +369,13 @@ public class PinView extends AppCompatEditText {
 
     private void updateBoxRectF(int i) {
         float startX = (getWidth() - (mPinBoxCount - 1) * mPinBoxMargin - mPinBoxCount * mPinBoxHeight) / 2;
-
+        if (mPinBoxMargin == 0) {
+            startX += (mPinBoxCount - 1) * mBorderWidth;
+        }
         float left = startX + mPinBoxHeight * i + mPinBoxMargin * i + mBorderWidth;
+        if (mPinBoxMargin == 0 && i > 0) {
+            left = left - 2 * mBorderWidth * i;
+        }
         float right = left + mPinBoxHeight - 2 * mBorderWidth;
         float top = mBorderWidth + getPaddingTop();
         float bottom = top + mPinBoxHeight - 2 * mBorderWidth;

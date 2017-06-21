@@ -39,7 +39,7 @@
         app:borderWidth="2dp"
         app:boxCount="5"
         app:boxHeight="48dp"
-        app:boxMargin="4dp"
+        app:boxMargin="0dp"
         app:boxRadius="4dp" />
 
     <com.chaos.view.PinView
