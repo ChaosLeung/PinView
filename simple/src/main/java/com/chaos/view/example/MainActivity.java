@@ -41,11 +41,11 @@ public class MainActivity extends AppCompatActivity {
                 ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()));
         pinView.setBorderColor(
                 ResourcesCompat.getColorStateList(getResources(), R.color.text_colors, getTheme()));
-        pinView.setBoxCount(4);
-        pinView.setBoxHeight(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_height));
-        pinView.setBoxRadius(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_radius));
-        pinView.setBoxMargin(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_margin));
-        pinView.setBorderWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_border_width));
+        pinView.setItemCount(4);
+        pinView.setItemSize(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
+        pinView.setItemRadius(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_radius));
+        pinView.setItemSpacing(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_spacing));
+        pinView.setBorderWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_border_width));
         pinView.setAnimationEnable(true);// start animation when adding text
     }
 

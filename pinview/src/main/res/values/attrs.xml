@@ -21,10 +21,18 @@
     </declare-styleable>
 
     <declare-styleable name="PinView">
+        <!-- {@deprecated Use itemCount instead.} -->
         <attr name="boxCount" format="integer" />
+        <!-- {@deprecated Use itemSize instead.} -->
         <attr name="boxHeight" format="dimension" />
+        <!-- {@deprecated Use itemRadius instead.} -->
         <attr name="boxRadius" format="dimension" />
+        <!-- {@deprecated Use itemSpacing instead.} -->
         <attr name="boxMargin" format="dimension" />
+        <attr name="itemCount" format="integer" />
+        <attr name="itemSize" format="dimension" />
+        <attr name="itemRadius" format="dimension" />
+        <attr name="itemSpacing" format="dimension" />
         <attr name="borderWidth" format="dimension" />
         <attr name="borderColor" format="reference|color" />
     </declare-styleable>

@@ -37,10 +37,10 @@
         android:textSize="18sp"
         app:borderColor="@color/border_colors"
         app:borderWidth="2dp"
-        app:boxCount="5"
-        app:boxHeight="48dp"
-        app:boxMargin="0dp"
-        app:boxRadius="4dp" />
+        app:itemCount="5"
+        app:itemSize="48dp"
+        app:itemSpacing="0dp"
+        app:itemRadius="4dp" />
 
     <com.chaos.view.PinView
         android:id="@+id/secondPinView"
@@ -57,7 +57,7 @@
         android:padding="@dimen/common_padding"
         android:text="PIN"
         android:textColor="@color/colorAccent"
-        app:boxCount="3"/>
+        app:itemCount="3"/>
 
     <com.chaos.view.PinView
         android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
         android:padding="@dimen/common_padding"
         android:text="您好"
         android:textColor="@color/colorPrimary"
-        app:boxCount="2" />
+        app:itemCount="2" />
 
     <com.chaos.view.PinView
         android:layout_width="wrap_content"
@@ -75,6 +75,6 @@
         android:padding="@dimen/common_padding"
         android:text="1"
         android:textColor="@color/colorAccent"
-        app:boxCount="1" />
+        app:itemCount="1" />
 
 </LinearLayout>

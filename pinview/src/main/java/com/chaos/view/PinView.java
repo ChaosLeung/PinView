@@ -45,21 +45,7 @@ import android.view.inputmethod.EditorInfo;
  *
  * @author Chaos Leong
  *         01/04/2017
- *
- * <p>
- * <b>XML attributes</b>
- * <p>
- * See <a href="https://developer.android.com/reference/android/R.styleable.html#EditText">EditText Attributes</a>,
- * <a href="https://developer.android.com/reference/android/R.styleable.html#TextView">TextView Attributes</a>,
- * <a href="https://developer.android.com/reference/android/R.styleable.html#View">View Attributes</a>
- * @attr ref R.styleable#PinView_boxCount
- * @attr ref R.styleable#PinView_boxHeight
- * @attr ref R.styleable#PinView_boxRadius
- * @attr ref R.styleable#PinView_boxMargin
- * @attr ref R.styleable#PinView_borderWidth
- * @attr ref R.styleable#PinView_borderColor
  */
-
 public class PinView extends AppCompatEditText {
 
     private static final String TAG = "PinView";
@@ -70,11 +56,11 @@ public class PinView extends AppCompatEditText {
 
     private static final InputFilter[] NO_FILTERS = new InputFilter[0];
 
-    private int mPinBoxCount;
+    private int mPinItemCount;
 
-    private float mPinBoxHeight;
-    private int mPinBoxRadius;
-    private int mPinBoxMargin;
+    private float mPinItemSize;
+    private int mPinItemRadius;
+    private int mPinItemSpacing;
 
     private final Paint mPaint;
     private final TextPaint mTextPaint;
@@ -119,20 +105,37 @@ public class PinView extends AppCompatEditText {
 
         TypedArray a = theme.obtainStyledAttributes(attrs, R.styleable.PinView, defStyleAttr, 0);
 
-        mPinBoxCount = a.getInt(R.styleable.PinView_boxCount, DEFAULT_COUNT);
-        mPinBoxHeight = a.getDimensionPixelSize(R.styleable.PinView_boxHeight,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_box_height));
-        mPinBoxMargin = a.getDimensionPixelOffset(R.styleable.PinView_boxMargin,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_box_margin));
+        mPinItemCount = a.getInt(R.styleable.PinView_boxCount, DEFAULT_COUNT);
+        mPinItemSize = a.getDimensionPixelSize(R.styleable.PinView_boxHeight,
+                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_size));
+        mPinItemSpacing = a.getDimensionPixelOffset(R.styleable.PinView_boxMargin,
+                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_spacing));
+        mPinItemRadius = a.getDimensionPixelOffset(R.styleable.PinView_boxRadius,
+                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_radius));
+
+        if (a.hasValue(R.styleable.PinView_itemCount)) {
+            mPinItemCount = a.getInt(R.styleable.PinView_itemCount, DEFAULT_COUNT);
+        }
+        if (a.hasValue(R.styleable.PinView_itemSize)) {
+            mPinItemSize = a.getDimensionPixelSize(R.styleable.PinView_itemSize,
+                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_size));
+        }
+        if (a.hasValue(R.styleable.PinView_itemSpacing)) {
+            mPinItemSpacing = a.getDimensionPixelOffset(R.styleable.PinView_itemSpacing,
+                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_spacing));
+        }
+        if (a.hasValue(R.styleable.PinView_itemRadius)) {
+            mPinItemRadius = a.getDimensionPixelOffset(R.styleable.PinView_itemRadius,
+                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_radius));
+        }
+
         mBorderWidth = a.getDimensionPixelOffset(R.styleable.PinView_borderWidth,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_box_border_width));
-        mPinBoxRadius = a.getDimensionPixelOffset(R.styleable.PinView_boxRadius,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_box_radius));
+                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_border_width));
         mBorderColor = a.getColorStateList(R.styleable.PinView_borderColor);
 
         a.recycle();
 
-        setMaxLength(mPinBoxCount);
+        setMaxLength(mPinItemCount);
         mPaint.setStrokeWidth(mBorderWidth);
         setupAnimator();
 
@@ -174,16 +177,16 @@ public class PinView extends AppCompatEditText {
         int width;
         int height;
 
-        float boxHeight = mPinBoxHeight;
+        float boxHeight = mPinItemSize;
 
         if (widthMode == MeasureSpec.EXACTLY) {
             // Parent has told us how big to be. So be it.
             width = widthSize;
         } else {
-            float boxesWidth = (mPinBoxCount - 1) * mPinBoxMargin + mPinBoxCount * boxHeight;
+            float boxesWidth = (mPinItemCount - 1) * mPinItemSpacing + mPinItemCount * boxHeight;
             width = Math.round(boxesWidth + getPaddingRight() + getPaddingLeft());
-            if (mPinBoxMargin == 0) {
-                width -= 2 * (mPinBoxCount - 1) * mBorderWidth;
+            if (mPinItemSpacing == 0) {
+                width -= 2 * (mPinItemCount - 1) * mBorderWidth;
             }
         }
 
@@ -264,7 +267,7 @@ public class PinView extends AppCompatEditText {
     }
 
     private void drawPinView(Canvas canvas) {
-        for (int i = 0; i < mPinBoxCount; i++) {
+        for (int i = 0; i < mPinItemCount; i++) {
             updateBoxRectF(i);
             updateCenterPoint();
 
@@ -280,7 +283,7 @@ public class PinView extends AppCompatEditText {
                 } else {
                     drawText(canvas, i);
                 }
-            } else if (!TextUtils.isEmpty(getHint()) && getHint().length() == mPinBoxCount) {
+            } else if (!TextUtils.isEmpty(getHint()) && getHint().length() == mPinItemCount) {
                 drawHint(canvas, i);
             }
         }
@@ -289,12 +292,12 @@ public class PinView extends AppCompatEditText {
     private void drawPinBox(Canvas canvas, int i) {
         boolean l, r;
         l = r = true;
-        if (mPinBoxMargin == 0) {
-            if (mPinBoxCount > 1) {
+        if (mPinItemSpacing == 0) {
+            if (mPinItemCount > 1) {
                 if (i == 0) {
                     // draw only left round
                     r = false;
-                } else if (i == mPinBoxCount - 1) {
+                } else if (i == mPinItemCount - 1) {
                     // draw only right round
                     l = false;
                 } else {
@@ -303,7 +306,7 @@ public class PinView extends AppCompatEditText {
                 }
             }
         }
-        updateRoundRectPath(mBoxBorderRect, mPinBoxRadius, mPinBoxRadius, l, r);
+        updateRoundRectPath(mBoxBorderRect, mPinItemRadius, mPinItemRadius, l, r);
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -368,17 +371,17 @@ public class PinView extends AppCompatEditText {
     }
 
     private void updateBoxRectF(int i) {
-        float startX = (getWidth() - (mPinBoxCount - 1) * mPinBoxMargin - mPinBoxCount * mPinBoxHeight) / 2;
-        if (mPinBoxMargin == 0) {
-            startX += (mPinBoxCount - 1) * mBorderWidth;
+        float startX = (getWidth() - (mPinItemCount - 1) * mPinItemSpacing - mPinItemCount * mPinItemSize) / 2;
+        if (mPinItemSpacing == 0) {
+            startX += (mPinItemCount - 1) * mBorderWidth;
         }
-        float left = startX + mPinBoxHeight * i + mPinBoxMargin * i + mBorderWidth;
-        if (mPinBoxMargin == 0 && i > 0) {
+        float left = startX + mPinItemSize * i + mPinItemSpacing * i + mBorderWidth;
+        if (mPinItemSpacing == 0 && i > 0) {
             left = left - 2 * mBorderWidth * i;
         }
-        float right = left + mPinBoxHeight - 2 * mBorderWidth;
+        float right = left + mPinItemSize - 2 * mBorderWidth;
         float top = mBorderWidth + getPaddingTop();
-        float bottom = top + mPinBoxHeight - 2 * mBorderWidth;
+        float bottom = top + mPinItemSize - 2 * mBorderWidth;
 
         mBoxBorderRect.set(left, top, right, bottom);
     }
@@ -570,19 +573,41 @@ public class PinView extends AppCompatEditText {
      *
      * @attr ref R.styleable#PinView_boxCount
      * @see #getBoxCount()
+     * @deprecated Use {@link #setItemCount(int)} instead.
      */
+    @Deprecated
     public void setBoxCount(int len) {
-        mPinBoxCount = len;
-        setMaxLength(len);
-        requestLayout();
+        setItemCount(len);
     }
 
     /**
      * @return Returns the count of the boxes.
      * @see #setBoxCount(int)
+     * @deprecated Use {@link #getItemCount()} instead.
      */
+    @Deprecated
     public int getBoxCount() {
-        return mPinBoxCount;
+        return getItemCount();
+    }
+
+    /**
+     * Sets the count of items.
+     *
+     * @attr ref R.styleable#PinView_itemCount
+     * @see #getItemCount()
+     */
+    public void setItemCount(int count) {
+        mPinItemCount = count;
+        setMaxLength(count);
+        requestLayout();
+    }
+
+    /**
+     * @return Returns the count of items.
+     * @see #setItemCount(int)
+     */
+    public int getItemCount() {
+        return mPinItemCount;
     }
 
     /**
@@ -590,18 +615,41 @@ public class PinView extends AppCompatEditText {
      *
      * @attr ref R.styleable#PinView_boxRadius
      * @see #getBoxRadius()
+     * @deprecated Use {@link #setItemRadius(int)} instead.
      */
+    @Deprecated
     public void setBoxRadius(@Px int pinBoxRadius) {
-        mPinBoxRadius = pinBoxRadius;
+        setItemRadius(pinBoxRadius);
     }
 
     /**
      * @return Returns the radius of boxes's border.
      * @see #setBoxRadius(int)
+     * @deprecated Use {@link #getItemRadius()} instead.
      */
     @Px
+    @Deprecated
     public int getBoxRadius() {
-        return mPinBoxRadius;
+        return getItemRadius();
+    }
+
+    /**
+     * Sets the radius of square.
+     *
+     * @attr ref R.styleable#PinView_itemRadius
+     * @see #getItemRadius()
+     */
+    public void setItemRadius(@Px int itemRadius) {
+        mPinItemRadius = itemRadius;
+    }
+
+    /**
+     * @return Returns the radius of square.
+     * @see #setItemRadius(int)
+     */
+    @Px
+    public int getItemRadius() {
+        return mPinItemRadius;
     }
 
     /**
@@ -609,19 +657,43 @@ public class PinView extends AppCompatEditText {
      *
      * @attr ref R.styleable#PinView_boxMargin
      * @see #getBoxMargin()
+     * @deprecated Use {@link #setItemSpacing(int)} instead.
      */
+    @Deprecated
     public void setBoxMargin(@Px int pinBoxMargin) {
-        mPinBoxMargin = pinBoxMargin;
-        requestLayout();
+        setItemSpacing(pinBoxMargin);
     }
 
     /**
      * @return Returns the margin between of the boxes.
      * @see #setBoxMargin(int)
+     * @deprecated Use {@link #getItemSpacing()} instead.
      */
     @Px
+    @Deprecated
     public int getBoxMargin() {
-        return mPinBoxMargin;
+        return getItemSpacing();
+    }
+
+
+    /**
+     * Specifies extra space between two items.
+     *
+     * @attr ref R.styleable#PinView_itemSpacing
+     * @see #getItemSpacing()
+     */
+    public void setItemSpacing(@Px int itemSpacing) {
+        mPinItemSpacing = itemSpacing;
+        requestLayout();
+    }
+
+    /**
+     * @return Returns the spacing between two items.
+     * @see #setItemSpacing(int)
+     */
+    @Px
+    public int getItemSpacing() {
+        return mPinItemSpacing;
     }
 
     /**
@@ -629,17 +701,39 @@ public class PinView extends AppCompatEditText {
      *
      * @attr ref R.styleable#PinView_boxHeight
      * @see #getBoxHeight()
+     * @deprecated Use {@link #setItemSize(float)} instead.
      */
+    @Deprecated
     public void setBoxHeight(float boxHeight) {
-        mPinBoxHeight = boxHeight;
+        setItemSize(boxHeight);
     }
 
     /**
      * @return Returns the height of box.
      * @see #setBoxHeight(float)
+     * @deprecated Use {@link #getItemSize()} instead.
      */
+    @Deprecated
     public float getBoxHeight() {
-        return mPinBoxHeight;
+        return getItemSize();
+    }
+
+    /**
+     * Sets the height and width of item.
+     *
+     * @attr ref R.styleable#PinView_itemSize
+     * @see #getItemSize()
+     */
+    public void setItemSize(float itemSize) {
+        mPinItemSize = itemSize;
+    }
+
+    /**
+     * @return Returns the size of item.
+     * @see #setBoxHeight(float)
+     */
+    public float getItemSize() {
+        return mPinItemSize;
     }
 
     /**

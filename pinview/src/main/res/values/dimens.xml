@@ -16,8 +16,8 @@
   -->
 
 <resources>
-    <dimen name="pv_pin_view_box_height">48dp</dimen>
-    <dimen name="pv_pin_view_box_radius">5dp</dimen>
-    <dimen name="pv_pin_view_box_margin">5dp</dimen>
-    <dimen name="pv_pin_view_box_border_width">2dp</dimen>
+    <dimen name="pv_pin_view_item_size">48dp</dimen>
+    <dimen name="pv_pin_view_item_radius">5dp</dimen>
+    <dimen name="pv_pin_view_item_spacing">5dp</dimen>
+    <dimen name="pv_pin_view_item_border_width">2dp</dimen>
 </resources>
