@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.0.1'
+   compile 'com.chaos.view:pinview:1.1.0'
 }
 ```
 
@@ -39,10 +39,10 @@ Add PinView in your layout.
     android:textSize="18sp"
     app:borderColor="@color/border_colors"
     app:borderWidth="2dp"
-    app:boxCount="5"
-    app:boxHeight="48dp"
-    app:boxMargin="4dp"
-    app:boxRadius="4dp"
+    app:itemCount="5"
+    app:itemSize="48dp"
+    app:itemSpacing="4dp"
+    app:itemRadius="4dp"
     style="@style/PinWidget.PinView" />
 ```
 
@@ -58,10 +58,10 @@ pinView.setBorderColor(
         ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()));
 pinView.setBorderColor(
         ResourcesCompat.getColorStateList(getResources(), R.color.border_colors, getTheme()));
-pinView.setBoxCount(5);
-pinView.setBoxHeight(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_height));
-pinView.setBoxRadius(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_radius));
-pinView.setBoxMargin(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_margin));
+pinView.setItemCount(5);
+pinView.setItemSize(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_height));
+pinView.setItemRadius(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_radius));
+pinView.setItemSpacing(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_margin));
 pinView.setBorderWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_border_width));
 pinView.setAnimationEnable(true);// start animation when adding text
 ```

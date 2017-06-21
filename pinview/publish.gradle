@@ -6,7 +6,7 @@ def issueUrl = 'https://github.com/ChaosLeong/PinView/issues'
 def gitUrl = 'git@github.com:ChaosLeong/PinView.git'
 
 group = "com.chaos.view"
-version = "1.0.1"
+version = "1.1.0"
 
 install {
     repositories.mavenInstaller {
@@ -57,6 +57,7 @@ task javadoc(type: Javadoc) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+    exclude '**/BuildConfig.class'
 }
 
 artifacts {
