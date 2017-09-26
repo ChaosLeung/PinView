@@ -569,28 +569,6 @@ public class PinView extends AppCompatEditText {
     }
 
     /**
-     * Sets the count of boxes.
-     *
-     * @attr ref R.styleable#PinView_boxCount
-     * @see #getBoxCount()
-     * @deprecated Use {@link #setItemCount(int)} instead.
-     */
-    @Deprecated
-    public void setBoxCount(int len) {
-        setItemCount(len);
-    }
-
-    /**
-     * @return Returns the count of the boxes.
-     * @see #setBoxCount(int)
-     * @deprecated Use {@link #getItemCount()} instead.
-     */
-    @Deprecated
-    public int getBoxCount() {
-        return getItemCount();
-    }
-
-    /**
      * Sets the count of items.
      *
      * @attr ref R.styleable#PinView_itemCount
@@ -608,29 +586,6 @@ public class PinView extends AppCompatEditText {
      */
     public int getItemCount() {
         return mPinItemCount;
-    }
-
-    /**
-     * Sets the radius of box's border.
-     *
-     * @attr ref R.styleable#PinView_boxRadius
-     * @see #getBoxRadius()
-     * @deprecated Use {@link #setItemRadius(int)} instead.
-     */
-    @Deprecated
-    public void setBoxRadius(@Px int pinBoxRadius) {
-        setItemRadius(pinBoxRadius);
-    }
-
-    /**
-     * @return Returns the radius of boxes's border.
-     * @see #setBoxRadius(int)
-     * @deprecated Use {@link #getItemRadius()} instead.
-     */
-    @Px
-    @Deprecated
-    public int getBoxRadius() {
-        return getItemRadius();
     }
 
     /**
@@ -653,30 +608,6 @@ public class PinView extends AppCompatEditText {
     }
 
     /**
-     * Specifies extra space between the boxes.
-     *
-     * @attr ref R.styleable#PinView_boxMargin
-     * @see #getBoxMargin()
-     * @deprecated Use {@link #setItemSpacing(int)} instead.
-     */
-    @Deprecated
-    public void setBoxMargin(@Px int pinBoxMargin) {
-        setItemSpacing(pinBoxMargin);
-    }
-
-    /**
-     * @return Returns the margin between of the boxes.
-     * @see #setBoxMargin(int)
-     * @deprecated Use {@link #getItemSpacing()} instead.
-     */
-    @Px
-    @Deprecated
-    public int getBoxMargin() {
-        return getItemSpacing();
-    }
-
-
-    /**
      * Specifies extra space between two items.
      *
      * @attr ref R.styleable#PinView_itemSpacing
@@ -697,28 +628,6 @@ public class PinView extends AppCompatEditText {
     }
 
     /**
-     * Sets the height and width of box.
-     *
-     * @attr ref R.styleable#PinView_boxHeight
-     * @see #getBoxHeight()
-     * @deprecated Use {@link #setItemSize(float)} instead.
-     */
-    @Deprecated
-    public void setBoxHeight(float boxHeight) {
-        setItemSize(boxHeight);
-    }
-
-    /**
-     * @return Returns the height of box.
-     * @see #setBoxHeight(float)
-     * @deprecated Use {@link #getItemSize()} instead.
-     */
-    @Deprecated
-    public float getBoxHeight() {
-        return getItemSize();
-    }
-
-    /**
      * Sets the height and width of item.
      *
      * @attr ref R.styleable#PinView_itemSize
@@ -730,7 +639,7 @@ public class PinView extends AppCompatEditText {
 
     /**
      * @return Returns the size of item.
-     * @see #setBoxHeight(float)
+     * @see #setItemSize(float)
      */
     public float getItemSize() {
         return mPinItemSize;
