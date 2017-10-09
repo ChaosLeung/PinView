@@ -30,17 +30,19 @@
         style="@style/PinWidget.PinView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hint="Hint."
         android:inputType="text"
         android:padding="@dimen/common_padding"
-        android:hint="Hint."
         android:textColor="@color/text_colors"
         android:textSize="18sp"
-        app:borderColor="@color/border_colors"
-        app:borderWidth="2dp"
         app:itemCount="5"
-        app:itemSize="48dp"
+        app:itemHeight="48dp"
+        app:itemRadius="4dp"
         app:itemSpacing="0dp"
-        app:itemRadius="4dp" />
+        app:itemWidth="36dp"
+        app:lineColor="@color/line_colors"
+        app:lineWidth="2dp"
+        app:viewType="rectangle" />
 
     <com.chaos.view.PinView
         android:id="@+id/secondPinView"
@@ -57,7 +59,9 @@
         android:padding="@dimen/common_padding"
         android:text="PIN"
         android:textColor="@color/colorAccent"
-        app:itemCount="3"/>
+        app:itemCount="3"
+        app:itemRadius="1dp"
+        app:viewType="line" />
 
     <com.chaos.view.PinView
         android:layout_width="wrap_content"

@@ -36,16 +36,17 @@ public class MainActivity extends AppCompatActivity {
         pinView.setTextColor(
                 ResourcesCompat.getColor(getResources(), R.color.colorAccent, getTheme()));
         pinView.setTextColor(
-                ResourcesCompat.getColorStateList(getResources(), R.color.border_colors, getTheme()));
-        pinView.setBorderColor(
+                ResourcesCompat.getColorStateList(getResources(), R.color.line_colors, getTheme()));
+        pinView.setLineColor(
                 ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()));
-        pinView.setBorderColor(
+        pinView.setLineColor(
                 ResourcesCompat.getColorStateList(getResources(), R.color.text_colors, getTheme()));
         pinView.setItemCount(4);
-        pinView.setItemSize(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
+        pinView.setItemHeight(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
+        pinView.setItemWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
         pinView.setItemRadius(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_radius));
         pinView.setItemSpacing(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_spacing));
-        pinView.setBorderWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_border_width));
+        pinView.setLineWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_line_width));
         pinView.setAnimationEnable(true);// start animation when adding text
     }
 
