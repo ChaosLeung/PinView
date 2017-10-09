@@ -56,9 +56,16 @@ public class PinView extends AppCompatEditText {
 
     private static final InputFilter[] NO_FILTERS = new InputFilter[0];
 
+    private static final int VIEW_TYPE_RECTANGLE = 0;
+    private static final int VIEW_TYPE_LINE = 1;
+
+    private int mViewType;
+
     private int mPinItemCount;
 
     private float mPinItemSize;
+    private float mPinItemWidth;
+    private float mPinItemHeight;
     private int mPinItemRadius;
     private int mPinItemSpacing;
 
@@ -66,14 +73,15 @@ public class PinView extends AppCompatEditText {
     private final TextPaint mTextPaint;
     private final Paint mAnimatorTextPaint;
 
-    private ColorStateList mBorderColor;
-    private int mCurBorderColor = Color.BLACK;
-    private int mBorderWidth;
+    private ColorStateList mLineColor;
+    private int mCurLineColor = Color.BLACK;
+    private int mLineWidth;
 
     private final Rect mTextRect = new Rect();
-    private final RectF mBoxBorderRect = new RectF();
+    private final RectF mItemBorderRect = new RectF();
+    private final RectF mItemLineRect = new RectF();
     private final Path mPath = new Path();
-    private final PointF mBoxCenterPoint = new PointF();
+    private final PointF mItemCenterPoint = new PointF();
 
     private ValueAnimator mDefaultAddAnimator;
     private boolean isAnimationEnable = false;
@@ -105,38 +113,38 @@ public class PinView extends AppCompatEditText {
 
         TypedArray a = theme.obtainStyledAttributes(attrs, R.styleable.PinView, defStyleAttr, 0);
 
-        mPinItemCount = a.getInt(R.styleable.PinView_boxCount, DEFAULT_COUNT);
-        mPinItemSize = a.getDimensionPixelSize(R.styleable.PinView_boxHeight,
+        mViewType = a.getInt(R.styleable.PinView_viewType, VIEW_TYPE_RECTANGLE);
+        mPinItemCount = a.getInt(R.styleable.PinView_itemCount, DEFAULT_COUNT);
+        mPinItemSize = a.getDimensionPixelSize(R.styleable.PinView_itemSize,
                 res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_size));
-        mPinItemSpacing = a.getDimensionPixelOffset(R.styleable.PinView_boxMargin,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_spacing));
-        mPinItemRadius = a.getDimensionPixelOffset(R.styleable.PinView_boxRadius,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_radius));
-
-        if (a.hasValue(R.styleable.PinView_itemCount)) {
-            mPinItemCount = a.getInt(R.styleable.PinView_itemCount, DEFAULT_COUNT);
-        }
-        if (a.hasValue(R.styleable.PinView_itemSize)) {
-            mPinItemSize = a.getDimensionPixelSize(R.styleable.PinView_itemSize,
+        mPinItemHeight = mPinItemWidth = mPinItemSize;
+        if (a.hasValue(R.styleable.PinView_itemHeight)) {
+            mPinItemHeight = a.getDimensionPixelOffset(R.styleable.PinView_itemHeight,
                     res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_size));
         }
-        if (a.hasValue(R.styleable.PinView_itemSpacing)) {
-            mPinItemSpacing = a.getDimensionPixelOffset(R.styleable.PinView_itemSpacing,
-                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_spacing));
+        if (a.hasValue(R.styleable.PinView_itemWidth)) {
+            mPinItemWidth = a.getDimensionPixelOffset(R.styleable.PinView_itemWidth,
+                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_size));
         }
-        if (a.hasValue(R.styleable.PinView_itemRadius)) {
-            mPinItemRadius = a.getDimensionPixelOffset(R.styleable.PinView_itemRadius,
-                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_radius));
+        mPinItemSpacing = a.getDimensionPixelOffset(R.styleable.PinView_itemSpacing,
+                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_spacing));
+        mPinItemRadius = a.getDimensionPixelOffset(R.styleable.PinView_itemRadius,
+                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_radius));
+        mLineWidth = a.getDimensionPixelOffset(R.styleable.PinView_borderWidth,
+                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_line_width));
+        mLineColor = a.getColorStateList(R.styleable.PinView_borderColor);
+        if (a.hasValue(R.styleable.PinView_lineWidth)) {
+            mLineWidth = a.getDimensionPixelOffset(R.styleable.PinView_lineWidth,
+                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_line_width));
         }
-
-        mBorderWidth = a.getDimensionPixelOffset(R.styleable.PinView_borderWidth,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_border_width));
-        mBorderColor = a.getColorStateList(R.styleable.PinView_borderColor);
+        if (a.hasValue(R.styleable.PinView_lineColor)) {
+            mLineColor = a.getColorStateList(R.styleable.PinView_lineColor);
+        }
 
         a.recycle();
 
         setMaxLength(mPinItemCount);
-        mPaint.setStrokeWidth(mBorderWidth);
+        mPaint.setStrokeWidth(mLineWidth);
         setupAnimator();
 
         setCursorVisible(false);
@@ -177,16 +185,16 @@ public class PinView extends AppCompatEditText {
         int width;
         int height;
 
-        float boxHeight = mPinItemSize;
+        float boxHeight = mPinItemHeight;
 
         if (widthMode == MeasureSpec.EXACTLY) {
             // Parent has told us how big to be. So be it.
             width = widthSize;
         } else {
-            float boxesWidth = (mPinItemCount - 1) * mPinItemSpacing + mPinItemCount * boxHeight;
+            float boxesWidth = (mPinItemCount - 1) * mPinItemSpacing + mPinItemCount * mPinItemWidth;
             width = Math.round(boxesWidth + getPaddingRight() + getPaddingLeft());
             if (mPinItemSpacing == 0) {
-                width -= 2 * (mPinItemCount - 1) * mBorderWidth;
+                width -= (mPinItemCount - 1) * mLineWidth;
             }
         }
 
@@ -245,7 +253,7 @@ public class PinView extends AppCompatEditText {
     protected void drawableStateChanged() {
         super.drawableStateChanged();
 
-        if (mBorderColor == null || mBorderColor.isStateful()) {
+        if (mLineColor == null || mLineColor.isStateful()) {
             updateColors();
         }
     }
@@ -261,17 +269,30 @@ public class PinView extends AppCompatEditText {
     }
 
     private void updatePaints() {
-        mPaint.setColor(mCurBorderColor);
-        mPaint.setStrokeWidth(mBorderWidth);
+        mPaint.setColor(mCurLineColor);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeWidth(mLineWidth);
         mTextPaint.setColor(getCurrentTextColor());
     }
 
     private void drawPinView(Canvas canvas) {
+        if (mViewType == VIEW_TYPE_RECTANGLE && mPinItemSpacing == 0 && mPinItemCount > 1) {
+            // because the whole box view draw by updateRoundRectPath() has some bugs we can not fix it,
+            // so just draw a whole box view
+            drawWholeBoxView(canvas);
+        }
+
         for (int i = 0; i < mPinItemCount; i++) {
-            updateBoxRectF(i);
+            updateItemRectF(i);
             updateCenterPoint();
 
-            drawPinBox(canvas, i);
+            if (mViewType == VIEW_TYPE_RECTANGLE) {
+                if (mPinItemSpacing != 0) {
+                    drawPerPinBox(canvas);
+                }
+            } else {
+                drawPinLine(canvas, i);
+            }
 
             if (DBG) {
                 drawAnchorLine(canvas);
@@ -289,24 +310,50 @@ public class PinView extends AppCompatEditText {
         }
     }
 
-    private void drawPinBox(Canvas canvas, int i) {
+    private void drawWholeBoxView(Canvas canvas) {
+        float halfLineWidth = (float) mLineWidth / 2;
+        float left = getPaddingLeft() + halfLineWidth;
+        float right = left + getWidth() - getPaddingLeft() - getPaddingRight() - mLineWidth;
+        float top = getPaddingTop() + halfLineWidth;
+        float bottom = top + mPinItemHeight - mLineWidth;
+        mItemBorderRect.set(left, top, right, bottom);
+
+        updateRoundRectPath(mItemBorderRect, mPinItemRadius, mPinItemRadius, true, true);
+
+        for (int i = 1; i < mPinItemCount; i++) {
+            mPath.moveTo(mItemBorderRect.left + (mPinItemWidth - mLineWidth) * i, mItemBorderRect.top - mLineWidth / 2);
+            mPath.rLineTo(0, mPinItemHeight - mLineWidth);
+        }
+
+        canvas.drawPath(mPath, mPaint);
+    }
+
+    private void drawPerPinBox(Canvas canvas) {
+        updateRoundRectPath(mItemBorderRect, mPinItemRadius, mPinItemRadius, true, true);
+        canvas.drawPath(mPath, mPaint);
+    }
+
+    private void drawPinLine(Canvas canvas, int i) {
         boolean l, r;
         l = r = true;
-        if (mPinItemSpacing == 0) {
-            if (mPinItemCount > 1) {
-                if (i == 0) {
-                    // draw only left round
-                    r = false;
-                } else if (i == mPinItemCount - 1) {
-                    // draw only right round
-                    l = false;
-                } else {
-                    // draw rect
-                    l = r = false;
-                }
+        if (mPinItemSpacing == 0 && mPinItemCount > 1) {
+            if (i == 0) {
+                // draw only left round
+                r = false;
+            } else if (i == mPinItemCount - 1) {
+                // draw only right round
+                l = false;
+            } else {
+                // draw rect
+                l = r = false;
             }
         }
-        updateRoundRectPath(mBoxBorderRect, mPinItemRadius, mPinItemRadius, l, r);
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setStrokeWidth(((float) mLineWidth) / 10);
+        float halfLineWidth = (float) mLineWidth / 2;
+        mItemLineRect.set(mItemBorderRect.left, mItemBorderRect.bottom - halfLineWidth, mItemBorderRect.right, mItemBorderRect.bottom + halfLineWidth);
+
+        updateRoundRectPath(mItemLineRect, mPinItemRadius, mPinItemRadius, l, r);
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -370,20 +417,17 @@ public class PinView extends AppCompatEditText {
         mPath.close();
     }
 
-    private void updateBoxRectF(int i) {
-        float startX = (getWidth() - (mPinItemCount - 1) * mPinItemSpacing - mPinItemCount * mPinItemSize) / 2;
-        if (mPinItemSpacing == 0) {
-            startX += (mPinItemCount - 1) * mBorderWidth;
-        }
-        float left = startX + mPinItemSize * i + mPinItemSpacing * i + mBorderWidth;
+    private void updateItemRectF(int i) {
+        float halfLineWidth = (float) mLineWidth / 2;
+        float left = getPaddingLeft() + i * (mPinItemSpacing + mPinItemWidth) + halfLineWidth;
         if (mPinItemSpacing == 0 && i > 0) {
-            left = left - 2 * mBorderWidth * i;
+            left = left - (mLineWidth) * i;
         }
-        float right = left + mPinItemSize - 2 * mBorderWidth;
-        float top = mBorderWidth + getPaddingTop();
-        float bottom = top + mPinItemSize - 2 * mBorderWidth;
+        float right = left + mPinItemWidth - mLineWidth;
+        float top = getPaddingTop() + halfLineWidth;
+        float bottom = top + mPinItemHeight - mLineWidth;
 
-        mBoxBorderRect.set(left, top, right, bottom);
+        mItemBorderRect.set(left, top, right, bottom);
     }
 
     private void drawText(Canvas canvas, int i) {
@@ -405,8 +449,8 @@ public class PinView extends AppCompatEditText {
 
     private void drawTextAtBox(Canvas canvas, Paint paint, CharSequence text, int charAt) {
         paint.getTextBounds(text.toString(), charAt, charAt + 1, mTextRect);
-        float cx = mBoxCenterPoint.x;
-        float cy = mBoxCenterPoint.y;
+        float cx = mItemCenterPoint.x;
+        float cy = mItemCenterPoint.y;
         float x = cx - Math.abs(mTextRect.width()) / 2 - mTextRect.left;
         float y = cy + Math.abs(mTextRect.height()) / 2 - mTextRect.bottom;// always center vertical
         canvas.drawText(text, charAt, charAt + 1, x, y, paint);
@@ -414,8 +458,8 @@ public class PinView extends AppCompatEditText {
 
     private void drawCircle(Canvas canvas, int i) {
         Paint paint = getPaintByIndex(i);
-        float cx = mBoxCenterPoint.x;
-        float cy = mBoxCenterPoint.y;
+        float cx = mItemCenterPoint.x;
+        float cy = mItemCenterPoint.y;
         canvas.drawCircle(cx, cy, paint.getTextSize() / 2, paint);
     }
 
@@ -432,39 +476,39 @@ public class PinView extends AppCompatEditText {
      * For seeing the font position
      */
     private void drawAnchorLine(Canvas canvas) {
-        float cx = mBoxCenterPoint.x;
-        float cy = mBoxCenterPoint.y;
+        float cx = mItemCenterPoint.x;
+        float cy = mItemCenterPoint.y;
         mPaint.setStrokeWidth(1);
         cx -= mPaint.getStrokeWidth() / 2;
         cy -= mPaint.getStrokeWidth() / 2;
 
         mPath.reset();
-        mPath.moveTo(cx, mBoxBorderRect.top);
-        mPath.lineTo(cx, mBoxBorderRect.top + Math.abs(mBoxBorderRect.height()));
+        mPath.moveTo(cx, mItemBorderRect.top);
+        mPath.lineTo(cx, mItemBorderRect.top + Math.abs(mItemBorderRect.height()));
         canvas.drawPath(mPath, mPaint);
 
         mPath.reset();
-        mPath.moveTo(mBoxBorderRect.left, cy);
-        mPath.lineTo(mBoxBorderRect.left + Math.abs(mBoxBorderRect.width()), cy);
+        mPath.moveTo(mItemBorderRect.left, cy);
+        mPath.lineTo(mItemBorderRect.left + Math.abs(mItemBorderRect.width()), cy);
         canvas.drawPath(mPath, mPaint);
 
         mPath.reset();
 
-        mPaint.setStrokeWidth(mBorderWidth);
+        mPaint.setStrokeWidth(mLineWidth);
     }
 
     private void updateColors() {
         boolean inval = false;
 
         int color;
-        if (mBorderColor != null) {
-            color = mBorderColor.getColorForState(getDrawableState(), 0);
+        if (mLineColor != null) {
+            color = mLineColor.getColorForState(getDrawableState(), 0);
         } else {
             color = getCurrentTextColor();
         }
 
-        if (color != mCurBorderColor) {
-            mCurBorderColor = color;
+        if (color != mCurLineColor) {
+            mCurLineColor = color;
             inval = true;
         }
 
@@ -474,9 +518,9 @@ public class PinView extends AppCompatEditText {
     }
 
     private void updateCenterPoint() {
-        float cx = mBoxBorderRect.left + Math.abs(mBoxBorderRect.width()) / 2;
-        float cy = mBoxBorderRect.top + Math.abs(mBoxBorderRect.height()) / 2;
-        mBoxCenterPoint.set(cx, cy);
+        float cx = mItemBorderRect.left + Math.abs(mItemBorderRect.width()) / 2;
+        float cy = mItemBorderRect.top + Math.abs(mItemBorderRect.height()) / 2;
+        mItemCenterPoint.set(cx, cy);
     }
 
     private static boolean isPasswordInputType(int inputType) {
@@ -506,10 +550,11 @@ public class PinView extends AppCompatEditText {
      * @attr ref R.styleable#PinView_borderColor
      * @see #setBorderColor(ColorStateList)
      * @see #getBorderColors()
+     * @deprecated Use {@link #setLineColor(int)} instead.
      */
+    @Deprecated
     public void setBorderColor(@ColorInt int color) {
-        mBorderColor = ColorStateList.valueOf(color);
-        updateColors();
+        setLineColor(color);
     }
 
     /**
@@ -518,14 +563,11 @@ public class PinView extends AppCompatEditText {
      * @attr ref R.styleable#PinView_borderColor
      * @see #setBorderColor(int)
      * @see #getBorderColors()
+     * @deprecated Use {@link #setLineColor(ColorStateList)} instead.
      */
+    @Deprecated
     public void setBorderColor(ColorStateList colors) {
-        if (colors == null) {
-            throw new NullPointerException();
-        }
-
-        mBorderColor = colors;
-        updateColors();
+        setLineColor(colors);
     }
 
     /**
@@ -534,19 +576,76 @@ public class PinView extends AppCompatEditText {
      * @attr ref R.styleable#PinView_borderColor
      * @see #setBorderColor(ColorStateList)
      * @see #setBorderColor(int)
+     * @deprecated Use {@link #getLineColors()} instead.
      */
+    @Deprecated
     public ColorStateList getBorderColors() {
-        return mBorderColor;
+        return getLineColors();
     }
 
     /**
      * <p>Return the current color selected for normal border.</p>
      *
      * @return Returns the current border color.
+     * @deprecated Use {@link #getCurrentLineColor()} instead.
      */
     @ColorInt
+    @Deprecated
     public int getCurrentBorderColor() {
-        return mCurBorderColor;
+        return getCurrentLineColor();
+    }
+
+    /**
+     * Sets the line color for all the states (normal, selected,
+     * focused) to be this color.
+     *
+     * @param color A color value in the form 0xAARRGGBB.
+     *              Do not pass a resource ID. To get a color value from a resource ID, call
+     *              {@link android.support.v4.content.ContextCompat#getColor(Context, int) getColor}.
+     * @attr ref R.styleable#PinView_lineColor
+     * @see #setLineColor(ColorStateList)
+     * @see #getLineColors()
+     */
+    public void setLineColor(@ColorInt int color) {
+        mLineColor = ColorStateList.valueOf(color);
+        updateColors();
+    }
+
+    /**
+     * Sets the line color.
+     *
+     * @attr ref R.styleable#PinView_lineColor
+     * @see #setLineColor(int)
+     * @see #getLineColors()
+     */
+    public void setLineColor(ColorStateList colors) {
+        if (colors == null) {
+            throw new NullPointerException();
+        }
+
+        mLineColor = colors;
+        updateColors();
+    }
+
+    /**
+     * Gets the line colors for the different states (normal, selected, focused) of the PinView.
+     *
+     * @attr ref R.styleable#PinView_lineColor
+     * @see #setLineColor(ColorStateList)
+     * @see #setLineColor(int)
+     */
+    public ColorStateList getLineColors() {
+        return mLineColor;
+    }
+
+    /**
+     * <p>Return the current color selected for normal line.</p>
+     *
+     * @return Returns the current item's line color.
+     */
+    @ColorInt
+    public int getCurrentLineColor() {
+        return mCurLineColor;
     }
 
     /**
@@ -554,18 +653,42 @@ public class PinView extends AppCompatEditText {
      *
      * @attr ref R.styleable#PinView_borderWidth
      * @see #getBorderWidth()
+     * @deprecated Use {@link #setLineWidth(int)} instead.
      */
+    @Deprecated
     public void setBorderWidth(@Px int borderWidth) {
-        mBorderWidth = borderWidth;
+        setLineWidth(borderWidth);
     }
 
     /**
      * @return Returns the width of the box's border.
      * @see #setBorderWidth(int)
+     * @deprecated Use {@link #getLineWidth()} instead.
      */
     @Px
+    @Deprecated
     public int getBorderWidth() {
-        return mBorderWidth;
+        return getLineWidth();
+    }
+
+    /**
+     * Sets the line width.
+     *
+     * @attr ref R.styleable#PinView_lineWidth
+     * @see #getLineWidth()
+     */
+    public void setLineWidth(@Px int borderWidth) {
+        mLineWidth = borderWidth;
+        requestLayout();
+    }
+
+    /**
+     * @return Returns the width of the item's line.
+     * @see #setLineWidth(int)
+     */
+    @Px
+    public int getLineWidth() {
+        return mLineWidth;
     }
 
     /**
@@ -596,6 +719,7 @@ public class PinView extends AppCompatEditText {
      */
     public void setItemRadius(@Px int itemRadius) {
         mPinItemRadius = itemRadius;
+        requestLayout();
     }
 
     /**
@@ -632,17 +756,60 @@ public class PinView extends AppCompatEditText {
      *
      * @attr ref R.styleable#PinView_itemSize
      * @see #getItemSize()
+     * @deprecated Use {@link #setItemHeight(float)} or {@link #setItemWidth(float)} instead.
      */
+    @Deprecated
     public void setItemSize(float itemSize) {
-        mPinItemSize = itemSize;
+        mPinItemWidth = mPinItemHeight = mPinItemSize = itemSize;
+        requestLayout();
     }
 
     /**
      * @return Returns the size of item.
      * @see #setItemSize(float)
+     * @deprecated Use {@link #getItemHeight()} or {@link #getItemWidth()} instead.
      */
+    @Deprecated
     public float getItemSize() {
         return mPinItemSize;
+    }
+
+    /**
+     * Sets the height of item.
+     *
+     * @attr ref R.styleable#PinView_itemHeight
+     * @see #getItemHeight()
+     */
+    public void setItemHeight(float itemHeight) {
+        mPinItemHeight = itemHeight;
+        requestLayout();
+    }
+
+    /**
+     * @return Returns the height of item.
+     * @see #setItemHeight(float)
+     */
+    public float getItemHeight() {
+        return mPinItemHeight;
+    }
+
+    /**
+     * Sets the width of item.
+     *
+     * @attr ref R.styleable#PinView_itemWidth
+     * @see #getItemWidth()
+     */
+    public void setItemWidth(float itemWidth) {
+        mPinItemWidth = itemWidth;
+        requestLayout();
+    }
+
+    /**
+     * @return Returns the width of item.
+     * @see #setItemWidth(float)
+     */
+    public float getItemWidth() {
+        return mPinItemWidth;
     }
 
     /**
