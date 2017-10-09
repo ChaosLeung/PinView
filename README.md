@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.1.0'
+   compile 'com.chaos.view:pinview:1.2.0'
 }
 ```
 
@@ -30,20 +30,22 @@ Add PinView in your layout.
 ``` xml
 <com.chaos.view.PinView
     android:id="@+id/pinView"
+    style="@style/PinWidget.PinView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:inputType="number"
-    android:padding="5dp"
-    android:text="12345"
+    android:hint="Hint."
+    android:inputType="text"
+    android:padding="@dimen/common_padding"
     android:textColor="@color/text_colors"
     android:textSize="18sp"
-    app:borderColor="@color/border_colors"
-    app:borderWidth="2dp"
     app:itemCount="5"
-    app:itemSize="48dp"
-    app:itemSpacing="4dp"
+    app:itemHeight="48dp"
     app:itemRadius="4dp"
-    style="@style/PinWidget.PinView" />
+    app:itemSpacing="0dp"
+    app:itemWidth="36dp"
+    app:lineColor="@color/line_colors"
+    app:lineWidth="2dp"
+    app:viewType="rectangle" />
 ```
 
 #### Java
@@ -53,16 +55,17 @@ PinView pinView = (PinView) findViewById(R.id.secondPinView);
 pinView.setTextColor(
         ResourcesCompat.getColor(getResources(), R.color.colorAccent, getTheme()));
 pinView.setTextColor(
-        ResourcesCompat.getColorStateList(getResources(), R.color.text_colors, getTheme()));
-pinView.setBorderColor(
+        ResourcesCompat.getColorStateList(getResources(), R.color.line_colors, getTheme()));
+pinView.setLineColor(
         ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()));
-pinView.setBorderColor(
-        ResourcesCompat.getColorStateList(getResources(), R.color.border_colors, getTheme()));
-pinView.setItemCount(5);
-pinView.setItemSize(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_height));
-pinView.setItemRadius(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_radius));
-pinView.setItemSpacing(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_margin));
-pinView.setBorderWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_box_border_width));
+pinView.setLineColor(
+        ResourcesCompat.getColorStateList(getResources(), R.color.text_colors, getTheme()));
+pinView.setItemCount(4);
+pinView.setItemHeight(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
+pinView.setItemWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
+pinView.setItemRadius(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_radius));
+pinView.setItemSpacing(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_spacing));
+pinView.setLineWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_line_width));
 pinView.setAnimationEnable(true);// start animation when adding text
 ```
 
@@ -77,7 +80,7 @@ Specifies `pinViewStyle` in your theme,
 </style>
 ```
 
-or implement `PinWidget.PinView` style.
+or use the `PinWidget.PinView` style.
 
 ``` xml
 <com.chaos.view.PinView
@@ -86,6 +89,19 @@ or implement `PinWidget.PinView` style.
     android:layout_height="wrap_content"
     style="@style/PinWidget.PinView" />
 ```
+
+## Attributes
+
+* **itemSize**, @deprecated use itemWidth or itemHeight instead.
+* **borderWidth**, @deprecated use lineWidth instead.
+* **borderColor**, @deprecated use lineColor instead.
+* **itemCount**, the length of your pin code.
+* **itemWidth**, the width of each item.
+* **itemHeight**, the height of each item.
+* **itemSpacing**, the spacing between two items.
+* **lineWidth**, the line(border) width.
+* **lineColor**, the line(border) colors.
+* **viewType**, the view type of PinView, currently this will be one of `rectangle` or `line`.
 
 ## Thanks
 
