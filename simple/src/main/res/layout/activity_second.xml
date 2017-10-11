@@ -54,5 +54,5 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/common_padding"
         android:inputType="numberPassword"
-        android:textColor="@color/border_colors" />
+        android:textColor="@color/line_colors" />
 </RelativeLayout>
