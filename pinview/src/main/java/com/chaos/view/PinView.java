@@ -128,8 +128,7 @@ public class PinView extends AppCompatEditText {
         }
         mPinItemSpacing = a.getDimensionPixelOffset(R.styleable.PinView_itemSpacing,
                 res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_spacing));
-        mPinItemRadius = a.getDimensionPixelOffset(R.styleable.PinView_itemRadius,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_radius));
+        mPinItemRadius = a.getDimensionPixelOffset(R.styleable.PinView_itemRadius, 0);
         mLineWidth = a.getDimensionPixelOffset(R.styleable.PinView_borderWidth,
                 res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_line_width));
         mLineColor = a.getColorStateList(R.styleable.PinView_borderColor);
@@ -142,6 +141,8 @@ public class PinView extends AppCompatEditText {
         }
 
         a.recycle();
+
+        checkItemRadius();
 
         setMaxLength(mPinItemCount);
         mPaint.setStrokeWidth(mLineWidth);
@@ -173,6 +174,19 @@ public class PinView extends AppCompatEditText {
                 postInvalidate();
             }
         });
+    }
+
+    private void checkItemRadius() {
+        if (mViewType == VIEW_TYPE_LINE) {
+            int halfOfLineWidth = mLineWidth / 2;
+            if (mPinItemRadius > halfOfLineWidth) {
+                throw new RuntimeException("The itemRadius can not be greater than lineWidth when viewType is line");
+            }
+        }
+        int halfOfItemWidth = (int) (mPinItemWidth / 2);
+        if (mPinItemRadius > halfOfItemWidth) {
+            throw new RuntimeException("The itemRadius can not be greater than itemWidth");
+        }
     }
 
     @Override
@@ -678,6 +692,7 @@ public class PinView extends AppCompatEditText {
      * @see #getLineWidth()
      */
     public void setLineWidth(@Px int borderWidth) {
+        checkItemRadius();
         mLineWidth = borderWidth;
         requestLayout();
     }
@@ -718,6 +733,7 @@ public class PinView extends AppCompatEditText {
      * @see #getItemRadius()
      */
     public void setItemRadius(@Px int itemRadius) {
+        checkItemRadius();
         mPinItemRadius = itemRadius;
         requestLayout();
     }
@@ -800,6 +816,7 @@ public class PinView extends AppCompatEditText {
      * @see #getItemWidth()
      */
     public void setItemWidth(float itemWidth) {
+        checkItemRadius();
         mPinItemWidth = itemWidth;
         requestLayout();
     }
