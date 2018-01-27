@@ -38,6 +38,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.MovementMethod;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 
@@ -52,6 +53,8 @@ public class PinView extends AppCompatEditText {
     private static final String TAG = "PinView";
 
     private static final boolean DBG = false;
+
+    private static final int BLINK = 500;
 
     private static final int DEFAULT_COUNT = 4;
 
@@ -86,6 +89,13 @@ public class PinView extends AppCompatEditText {
 
     private ValueAnimator mDefaultAddAnimator;
     private boolean isAnimationEnable = false;
+
+    private Blink mBlink;
+    private boolean isCursorVisible;
+    private boolean drawCursor;
+    private float mCursorHeight;
+    private int mCursorWidth;
+    private int mCursorColor;
 
     public PinView(Context context) {
         this(context, null);
@@ -140,8 +150,14 @@ public class PinView extends AppCompatEditText {
         if (a.hasValue(R.styleable.PinView_lineColor)) {
             mLineColor = a.getColorStateList(R.styleable.PinView_lineColor);
         }
+        isCursorVisible = a.getBoolean(R.styleable.PinView_android_cursorVisible, true);
+        mCursorColor = a.getColor(R.styleable.PinView_cursorColor, getCurrentTextColor());
+        mCursorWidth = a.getDimensionPixelSize(R.styleable.PinView_cursorWidth,
+                res.getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
 
         a.recycle();
+
+        updateCursorHeight();
 
         checkItemRadius();
 
@@ -149,7 +165,7 @@ public class PinView extends AppCompatEditText {
         mPaint.setStrokeWidth(mLineWidth);
         setupAnimator();
 
-        setCursorVisible(false);
+        super.setCursorVisible(false);
         setTextIsSelectable(false);
     }
 
@@ -225,11 +241,11 @@ public class PinView extends AppCompatEditText {
 
     @Override
     protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        super.onTextChanged(text, start, lengthBefore, lengthAfter);
-
         if (start != text.length()) {
-            moveCursorToEnd();
+            moveSelectionToEnd();
         }
+
+        makeBlink();
 
         if (isAnimationEnable) {
             final boolean isAdd = lengthAfter - lengthBefore > 0;
@@ -247,7 +263,8 @@ public class PinView extends AppCompatEditText {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
 
         if (focused) {
-            moveCursorToEnd();
+            moveSelectionToEnd();
+            makeBlink();
         }
     }
 
@@ -256,11 +273,11 @@ public class PinView extends AppCompatEditText {
         super.onSelectionChanged(selStart, selEnd);
 
         if (selEnd != getText().length()) {
-            moveCursorToEnd();
+            moveSelectionToEnd();
         }
     }
 
-    private void moveCursorToEnd() {
+    private void moveSelectionToEnd() {
         setSelection(getText().length());
     }
 
@@ -323,6 +340,8 @@ public class PinView extends AppCompatEditText {
             updateCenterPoint();
 
             mPaint.setColor(getLineColorForState(android.R.attr.state_selected));
+
+            drawCursor(canvas);
 
             if (mViewType == VIEW_TYPE_RECTANGLE) {
                 drawPinBox(canvas, index);
@@ -393,6 +412,25 @@ public class PinView extends AppCompatEditText {
 
         updateRoundRectPath(mItemLineRect, mPinItemRadius, mPinItemRadius, l, r);
         canvas.drawPath(mPath, mPaint);
+    }
+
+    private void drawCursor(Canvas canvas) {
+        if (drawCursor) {
+            float cx = mItemCenterPoint.x;
+            float cy = mItemCenterPoint.y;
+            float x = cx;
+            float y = cy - mCursorHeight / 2;
+
+            int color = mPaint.getColor();
+            float width = mPaint.getStrokeWidth();
+            mPaint.setColor(mCursorColor);
+            mPaint.setStrokeWidth(mCursorWidth);
+
+            canvas.drawLine(x, y, x, y + mCursorHeight, mPaint);
+
+            mPaint.setColor(color);
+            mPaint.setStrokeWidth(width);
+        }
     }
 
     private void updateRoundRectPath(RectF rectF, float rx, float ry, boolean l, boolean r) {
@@ -822,6 +860,7 @@ public class PinView extends AppCompatEditText {
      */
     public void setItemHeight(float itemHeight) {
         mPinItemHeight = itemHeight;
+        updateCursorHeight();
         requestLayout();
     }
 
@@ -861,5 +900,184 @@ public class PinView extends AppCompatEditText {
      */
     public void setAnimationEnable(boolean enable) {
         isAnimationEnable = enable;
+    }
+
+    @Override
+    public void setTextSize(float size) {
+        super.setTextSize(size);
+        updateCursorHeight();
+    }
+
+    @Override
+    public void setTextSize(int unit, float size) {
+        super.setTextSize(unit, size);
+        updateCursorHeight();
+    }
+
+    //region Cursor
+    /**
+     * Sets the width (in pixels) of cursor.
+     *
+     * @attr ref R.styleable#PinView_cursorWidth
+     * @see #getCursorWidth()
+     */
+    public void setCursorWidth(@Px int width) {
+        checkItemRadius();
+        mCursorWidth = width;
+        if (isCursorVisible()) {
+            invalidateCursor(true);
+        }
+    }
+
+    /**
+     * @return Returns the width (in pixels) of cursor.
+     * @see #setCursorWidth(int)
+     */
+    public int getCursorWidth() {
+        return mCursorWidth;
+    }
+
+    /**
+     * Sets the cursor color.
+     *
+     * @param color A color value in the form 0xAARRGGBB.
+     *              Do not pass a resource ID. To get a color value from a resource ID, call
+     *              {@link android.support.v4.content.ContextCompat#getColor(Context, int) getColor}.
+     * @attr ref R.styleable#PinView_cursorColor
+     * @see #getCursorColor()
+     */
+    public void setCursorColor(@ColorInt int color) {
+        mCursorColor = color;
+        if (isCursorVisible()) {
+            invalidateCursor(true);
+        }
+    }
+
+    /**
+     * Gets the cursor color.
+     *
+     * @return Return current cursor color.
+     * @see #setCursorColor(int)
+     */
+    public int getCursorColor() {
+        return mCursorColor;
+    }
+
+    @Override
+    public void setCursorVisible(boolean visible) {
+        if (isCursorVisible != visible) {
+            isCursorVisible = visible;
+            invalidateCursor(isCursorVisible);
+            makeBlink();
+        }
+    }
+
+    @Override
+    public boolean isCursorVisible() {
+        return isCursorVisible;
+    }
+
+    @Override
+    public void onScreenStateChanged(int screenState) {
+        super.onScreenStateChanged(screenState);
+        switch (screenState) {
+            case View.SCREEN_STATE_ON:
+                resumeBlink();
+                break;
+            case View.SCREEN_STATE_OFF:
+                suspendBlink();
+                break;
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        resumeBlink();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        suspendBlink();
+    }
+
+    private boolean shouldBlink() {
+        return isCursorVisible() && isFocused();
+    }
+
+    private void makeBlink() {
+        if (shouldBlink()) {
+            if (mBlink == null) {
+                mBlink = new Blink();
+            }
+            removeCallbacks(mBlink);
+            drawCursor = false;
+            postDelayed(mBlink, BLINK);
+        } else {
+            if (mBlink != null) {
+                removeCallbacks(mBlink);
+            }
+        }
+    }
+
+    private void suspendBlink() {
+        if (mBlink != null) {
+            mBlink.cancel();
+            invalidateCursor(false);
+        }
+    }
+
+    private void resumeBlink() {
+        if (mBlink != null) {
+            mBlink.uncancel();
+            makeBlink();
+        }
+    }
+
+    private void invalidateCursor(boolean showCursor) {
+        if (drawCursor != showCursor) {
+            drawCursor = showCursor;
+            invalidate();
+        }
+    }
+
+    private void updateCursorHeight() {
+        int delta = 2 * dpToPx(2);
+        mCursorHeight = mPinItemHeight - getTextSize() > delta ? getTextSize() + delta : getTextSize();
+    }
+
+    private class Blink implements Runnable {
+        private boolean mCancelled;
+
+        @Override
+        public void run() {
+            if (mCancelled) {
+                return;
+            }
+
+            removeCallbacks(this);
+
+            if (shouldBlink()) {
+                invalidateCursor(!drawCursor);
+                postDelayed(this, BLINK);
+            }
+        }
+
+        private void cancel() {
+            if (!mCancelled) {
+                removeCallbacks(this);
+                mCancelled = true;
+            }
+        }
+
+        void uncancel() {
+            mCancelled = false;
+        }
+    }
+    //endregion
+
+    private int dpToPx(float dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }
 }
