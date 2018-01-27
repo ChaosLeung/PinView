@@ -38,5 +38,8 @@
             <enum name="rectangle" value="0" />
             <enum name="line" value="1" />
         </attr>
+        <attr name="android:cursorVisible" />
+        <attr name="cursorWidth" format="dimension" />
+        <attr name="cursorColor" format="reference|color" />
     </declare-styleable>
 </resources>
