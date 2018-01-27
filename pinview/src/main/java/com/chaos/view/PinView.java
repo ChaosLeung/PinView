@@ -31,6 +31,7 @@ import android.graphics.RectF;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
 import android.text.TextPaint;
@@ -206,7 +207,7 @@ public class PinView extends AppCompatEditText {
             width = widthSize;
         } else {
             float boxesWidth = (mPinItemCount - 1) * mPinItemSpacing + mPinItemCount * mPinItemWidth;
-            width = Math.round(boxesWidth + getPaddingRight() + getPaddingLeft());
+            width = Math.round(boxesWidth + ViewCompat.getPaddingEnd(this) + ViewCompat.getPaddingStart(this));
             if (mPinItemSpacing == 0) {
                 width -= (mPinItemCount - 1) * mLineWidth;
             }
@@ -326,9 +327,9 @@ public class PinView extends AppCompatEditText {
 
     private void drawWholeBoxView(Canvas canvas) {
         float halfLineWidth = (float) mLineWidth / 2;
-        float left = getPaddingLeft() + halfLineWidth;
-        float right = left + getWidth() - getPaddingLeft() - getPaddingRight() - mLineWidth;
-        float top = getPaddingTop() + halfLineWidth;
+        float left = getScrollX() + ViewCompat.getPaddingStart(this) + halfLineWidth;
+        float right = left + getWidth() - ViewCompat.getPaddingStart(this) - ViewCompat.getPaddingEnd(this) - mLineWidth;
+        float top = getScrollY() + getPaddingTop() + halfLineWidth;
         float bottom = top + mPinItemHeight - mLineWidth;
         mItemBorderRect.set(left, top, right, bottom);
 
@@ -433,12 +434,12 @@ public class PinView extends AppCompatEditText {
 
     private void updateItemRectF(int i) {
         float halfLineWidth = (float) mLineWidth / 2;
-        float left = getPaddingLeft() + i * (mPinItemSpacing + mPinItemWidth) + halfLineWidth;
+        float left = getScrollX() + ViewCompat.getPaddingStart(this) + i * (mPinItemSpacing + mPinItemWidth) + halfLineWidth;
         if (mPinItemSpacing == 0 && i > 0) {
             left = left - (mLineWidth) * i;
         }
         float right = left + mPinItemWidth - mLineWidth;
-        float top = getPaddingTop() + halfLineWidth;
+        float top = getScrollY() + getPaddingTop() + halfLineWidth;
         float bottom = top + mPinItemHeight - mLineWidth;
 
         mItemBorderRect.set(left, top, right, bottom);
