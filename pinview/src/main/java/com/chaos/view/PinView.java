@@ -291,20 +291,12 @@ public class PinView extends AppCompatEditText {
     }
 
     private void drawPinView(Canvas canvas) {
-        if (mViewType == VIEW_TYPE_RECTANGLE && mPinItemSpacing == 0 && mPinItemCount > 1) {
-            // because the whole box view draw by updateRoundRectPath() has some bugs we can not fix it,
-            // so just draw a whole box view
-            drawWholeBoxView(canvas);
-        }
-
         for (int i = 0; i < mPinItemCount; i++) {
             updateItemRectF(i);
             updateCenterPoint();
 
             if (mViewType == VIEW_TYPE_RECTANGLE) {
-                if (mPinItemSpacing != 0) {
-                    drawPerPinBox(canvas);
-                }
+                drawPinBox(canvas, i);
             } else {
                 drawPinLine(canvas, i);
             }
@@ -323,6 +315,25 @@ public class PinView extends AppCompatEditText {
                 drawHint(canvas, i);
             }
         }
+
+        // highlight the next item
+        if (isFocused() && getText().length() != mPinItemCount) {
+            int index = getText().length();
+            updateItemRectF(index);
+            updateCenterPoint();
+
+            mPaint.setColor(getLineColorForState(android.R.attr.state_selected));
+
+            if (mViewType == VIEW_TYPE_RECTANGLE) {
+                drawPinBox(canvas, index);
+            } else {
+                drawPinLine(canvas, index);
+            }
+        }
+    }
+
+    private int getLineColorForState(int... states) {
+        return mLineColor != null ? mLineColor.getColorForState(states, mCurLineColor) : mCurLineColor;
     }
 
     private void drawWholeBoxView(Canvas canvas) {
@@ -343,8 +354,20 @@ public class PinView extends AppCompatEditText {
         canvas.drawPath(mPath, mPaint);
     }
 
-    private void drawPerPinBox(Canvas canvas) {
-        updateRoundRectPath(mItemBorderRect, mPinItemRadius, mPinItemRadius, true, true);
+    private void drawPinBox(Canvas canvas, int i) {
+        boolean drawRightCorner = false;
+        boolean drawLeftCorner = false;
+        if (mPinItemSpacing != 0) {
+            drawLeftCorner = drawRightCorner = true;
+        } else {
+            if (i == 0 && i != mPinItemCount - 1) {
+                drawLeftCorner = true;
+            }
+            if (i == mPinItemCount - 1 && i != 0) {
+                drawRightCorner = true;
+            }
+        }
+        updateRoundRectPath(mItemBorderRect, mPinItemRadius, mPinItemRadius, drawLeftCorner, drawRightCorner);
         canvas.drawPath(mPath, mPaint);
     }
 
