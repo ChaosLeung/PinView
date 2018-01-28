@@ -63,7 +63,6 @@
         android:text="PIN"
         android:textColor="@color/colorAccent"
         app:itemCount="3"
-        app:itemRadius="1dp"
         app:viewType="line" />
 
     <com.chaos.view.PinView
