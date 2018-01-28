@@ -22,16 +22,10 @@
 
     <declare-styleable name="PinView">
         <attr name="itemCount" format="integer" />
-        <!-- {@deprecated Use itemWidth or itemHeight instead.} -->
-        <attr name="itemSize" format="dimension" />
         <attr name="itemWidth" format="dimension" />
         <attr name="itemHeight" format="dimension" />
         <attr name="itemRadius" format="dimension" />
         <attr name="itemSpacing" format="dimension" />
-        <!-- {@deprecated Use lineWidth instead.} -->
-        <attr name="borderWidth" format="dimension" />
-        <!-- {@deprecated Use lineColor instead.} -->
-        <attr name="borderColor" format="reference|color" />
         <attr name="lineWidth" format="dimension" />
         <attr name="lineColor" format="reference|color" />
         <attr name="viewType" format="enum">
