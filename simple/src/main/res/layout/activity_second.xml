@@ -16,6 +16,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="16dp">
@@ -36,7 +37,8 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/common_padding"
         android:inputType="number"
-        android:textColor="@color/text_colors" />
+        android:textColor="@color/text_colors"
+        app:itemRadius="@dimen/pv_pin_view_item_radius" />
 
     <TextView
         android:id="@+id/secondLabel"
@@ -54,5 +56,8 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/common_padding"
         android:inputType="numberPassword"
-        android:textColor="@color/line_colors" />
+        android:textColor="@color/line_colors"
+        android:cursorVisible="false"
+        app:lineColor="@color/line_colors"
+        app:itemRadius="@dimen/pv_pin_view_item_radius" />
 </RelativeLayout>
