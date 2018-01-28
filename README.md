@@ -1,6 +1,6 @@
 # PinView
 
-Provides a widget for enter PIN/OTP/password etc.
+Provides a widget for enter PIN/OTP/password etc on Android 4.1+ (API 16).
 
 <p><img src="screenshots/styles.png" width="35%" />
 <img src="screenshots/input.gif" width="35%" /></p>
@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.2.0'
+   compile 'com.chaos.view:pinview:1.3.0'
 }
 ```
 
@@ -38,6 +38,9 @@ Add PinView in your layout.
     android:padding="@dimen/common_padding"
     android:textColor="@color/text_colors"
     android:textSize="18sp"
+    android:cursorVisible="true"
+    app:cursorColor="@color/line_selected"
+    app:cursorWidth="2dp"
     app:itemCount="5"
     app:itemHeight="48dp"
     app:itemRadius="4dp"
@@ -55,11 +58,11 @@ PinView pinView = (PinView) findViewById(R.id.secondPinView);
 pinView.setTextColor(
         ResourcesCompat.getColor(getResources(), R.color.colorAccent, getTheme()));
 pinView.setTextColor(
-        ResourcesCompat.getColorStateList(getResources(), R.color.line_colors, getTheme()));
+        ResourcesCompat.getColorStateList(getResources(), R.color.text_colors, getTheme()));
 pinView.setLineColor(
         ResourcesCompat.getColor(getResources(), R.color.colorPrimary, getTheme()));
 pinView.setLineColor(
-        ResourcesCompat.getColorStateList(getResources(), R.color.text_colors, getTheme()));
+        ResourcesCompat.getColorStateList(getResources(), R.color.line_colors, getTheme()));
 pinView.setItemCount(4);
 pinView.setItemHeight(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
 pinView.setItemWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
@@ -67,6 +70,10 @@ pinView.setItemRadius(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_i
 pinView.setItemSpacing(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_spacing));
 pinView.setLineWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_item_line_width));
 pinView.setAnimationEnable(true);// start animation when adding text
+pinView.setCursorVisible(false);
+pinView.setCursorColor(
+        ResourcesCompat.getColor(getResources(), R.color.line_selected, getTheme()));
+pinView.setCursorWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
 ```
 
 ### Step 2:
@@ -90,18 +97,34 @@ or use the `PinWidget.PinView` style.
     style="@style/PinWidget.PinView" />
 ```
 
+### Step 3 (Optional):
+
+To highlight current item,
+
+add `android:state_selected="true"` to `app:lineColor`
+
+``` xml
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Use for the item to be input, set the value as the default to disable it -->
+    <item android:color="@color/line_selected" android:state_selected="true" />
+    <item android:color="@color/line_focused" android:state_focused="true" />
+    <item android:color="@color/line_default" />
+</selector>
+```
+
+or add `android:cursorVisible="true"`.
+
 ## Attributes
 
-* **itemSize**, @deprecated use itemWidth or itemHeight instead.
-* **borderWidth**, @deprecated use lineWidth instead.
-* **borderColor**, @deprecated use lineColor instead.
 * **itemCount**, the length of your pin code.
 * **itemWidth**, the width of each item.
 * **itemHeight**, the height of each item.
 * **itemSpacing**, the spacing between two items.
-* **lineWidth**, the line(border) width.
-* **lineColor**, the line(border) colors.
+* **lineWidth**, the line (border) width.
+* **lineColor**, the line (border) colors.
 * **viewType**, the view type of PinView, currently this will be one of `rectangle` or `line`.
+* **cursorColor**, the cursor color.
+* **cursorWidth**, the width of cursor.
 
 ## Thanks
 
