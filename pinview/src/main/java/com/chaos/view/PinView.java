@@ -142,6 +142,9 @@ public class PinView extends AppCompatEditText {
 
         a.recycle();
 
+        if (mLineColor != null) {
+            mCurLineColor = mLineColor.getDefaultColor();
+        }
         updateCursorHeight();
 
         checkItemRadius();
@@ -338,24 +341,6 @@ public class PinView extends AppCompatEditText {
 
     private int getLineColorForState(int... states) {
         return mLineColor != null ? mLineColor.getColorForState(states, mCurLineColor) : mCurLineColor;
-    }
-
-    private void drawWholeBoxView(Canvas canvas) {
-        float halfLineWidth = (float) mLineWidth / 2;
-        float left = getScrollX() + ViewCompat.getPaddingStart(this) + halfLineWidth;
-        float right = left + getWidth() - ViewCompat.getPaddingStart(this) - ViewCompat.getPaddingEnd(this) - mLineWidth;
-        float top = getScrollY() + getPaddingTop() + halfLineWidth;
-        float bottom = top + mPinItemHeight - mLineWidth;
-        mItemBorderRect.set(left, top, right, bottom);
-
-        updateRoundRectPath(mItemBorderRect, mPinItemRadius, mPinItemRadius, true, true);
-
-        for (int i = 1; i < mPinItemCount; i++) {
-            mPath.moveTo(mItemBorderRect.left + (mPinItemWidth - mLineWidth) * i, mItemBorderRect.top - mLineWidth / 2);
-            mPath.rLineTo(0, mPinItemHeight - mLineWidth);
-        }
-
-        canvas.drawPath(mPath, mPaint);
     }
 
     private void drawPinBox(Canvas canvas, int i) {
@@ -799,6 +784,7 @@ public class PinView extends AppCompatEditText {
     }
 
     //region Cursor
+
     /**
      * Sets the width (in pixels) of cursor.
      *
