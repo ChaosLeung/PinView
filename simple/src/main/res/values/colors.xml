@@ -23,6 +23,7 @@
     <color name="text_focused">#E91E63</color>
     <color name="text_default">#F8BBD0</color>
     <color name="text_hint_default">#BDBDBD</color>
+    <color name="line_selected">#E91E63</color>
     <color name="line_focused">#3F51B5</color>
     <color name="line_default">#C5CAE9</color>
 </resources>

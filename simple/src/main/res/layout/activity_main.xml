@@ -35,12 +35,15 @@
         android:padding="@dimen/common_padding"
         android:textColor="@color/text_colors"
         android:textSize="18sp"
+        android:cursorVisible="true"
+        app:cursorColor="@color/line_selected"
+        app:cursorWidth="2dp"
         app:itemCount="5"
         app:itemHeight="48dp"
         app:itemRadius="4dp"
         app:itemSpacing="0dp"
         app:itemWidth="36dp"
-        app:lineColor="@color/line_colors"
+        app:lineColor="@color/line_selected"
         app:lineWidth="2dp"
         app:viewType="rectangle" />
 
