@@ -67,7 +67,6 @@ public class PinView extends AppCompatEditText {
 
     private int mPinItemCount;
 
-    private float mPinItemSize;
     private float mPinItemWidth;
     private float mPinItemHeight;
     private int mPinItemRadius;
@@ -126,30 +125,16 @@ public class PinView extends AppCompatEditText {
 
         mViewType = a.getInt(R.styleable.PinView_viewType, VIEW_TYPE_RECTANGLE);
         mPinItemCount = a.getInt(R.styleable.PinView_itemCount, DEFAULT_COUNT);
-        mPinItemSize = a.getDimensionPixelSize(R.styleable.PinView_itemSize,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_size));
-        mPinItemHeight = mPinItemWidth = mPinItemSize;
-        if (a.hasValue(R.styleable.PinView_itemHeight)) {
-            mPinItemHeight = a.getDimensionPixelOffset(R.styleable.PinView_itemHeight,
-                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_size));
-        }
-        if (a.hasValue(R.styleable.PinView_itemWidth)) {
-            mPinItemWidth = a.getDimensionPixelOffset(R.styleable.PinView_itemWidth,
-                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_size));
-        }
-        mPinItemSpacing = a.getDimensionPixelOffset(R.styleable.PinView_itemSpacing,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_spacing));
-        mPinItemRadius = a.getDimensionPixelOffset(R.styleable.PinView_itemRadius, 0);
-        mLineWidth = a.getDimensionPixelOffset(R.styleable.PinView_borderWidth,
-                res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_line_width));
-        mLineColor = a.getColorStateList(R.styleable.PinView_borderColor);
-        if (a.hasValue(R.styleable.PinView_lineWidth)) {
-            mLineWidth = a.getDimensionPixelOffset(R.styleable.PinView_lineWidth,
-                    res.getDimensionPixelOffset(R.dimen.pv_pin_view_item_line_width));
-        }
-        if (a.hasValue(R.styleable.PinView_lineColor)) {
-            mLineColor = a.getColorStateList(R.styleable.PinView_lineColor);
-        }
+        mPinItemHeight = a.getDimensionPixelSize(R.styleable.PinView_itemHeight,
+                res.getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
+        mPinItemWidth = a.getDimensionPixelSize(R.styleable.PinView_itemWidth,
+                res.getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
+        mPinItemSpacing = a.getDimensionPixelSize(R.styleable.PinView_itemSpacing,
+                res.getDimensionPixelSize(R.dimen.pv_pin_view_item_spacing));
+        mPinItemRadius = a.getDimensionPixelSize(R.styleable.PinView_itemRadius, 0);
+        mLineWidth = a.getDimensionPixelSize(R.styleable.PinView_lineWidth,
+                res.getDimensionPixelSize(R.dimen.pv_pin_view_item_line_width));
+        mLineColor = a.getColorStateList(R.styleable.PinView_lineColor);
         isCursorVisible = a.getBoolean(R.styleable.PinView_android_cursorVisible, true);
         mCursorColor = a.getColor(R.styleable.PinView_cursorColor, getCurrentTextColor());
         mCursorWidth = a.getDimensionPixelSize(R.styleable.PinView_cursorWidth,
@@ -617,61 +602,6 @@ public class PinView extends AppCompatEditText {
     }
 
     /**
-     * Sets the border color for all the states (normal, selected,
-     * focused) to be this color.
-     *
-     * @param color A color value in the form 0xAARRGGBB.
-     *              Do not pass a resource ID. To get a color value from a resource ID, call
-     *              {@link android.support.v4.content.ContextCompat#getColor(Context, int) getColor}.
-     * @attr ref R.styleable#PinView_borderColor
-     * @see #setBorderColor(ColorStateList)
-     * @see #getBorderColors()
-     * @deprecated Use {@link #setLineColor(int)} instead.
-     */
-    @Deprecated
-    public void setBorderColor(@ColorInt int color) {
-        setLineColor(color);
-    }
-
-    /**
-     * Sets the border color.
-     *
-     * @attr ref R.styleable#PinView_borderColor
-     * @see #setBorderColor(int)
-     * @see #getBorderColors()
-     * @deprecated Use {@link #setLineColor(ColorStateList)} instead.
-     */
-    @Deprecated
-    public void setBorderColor(ColorStateList colors) {
-        setLineColor(colors);
-    }
-
-    /**
-     * Gets the border colors for the different states (normal, selected, focused) of the PinView.
-     *
-     * @attr ref R.styleable#PinView_borderColor
-     * @see #setBorderColor(ColorStateList)
-     * @see #setBorderColor(int)
-     * @deprecated Use {@link #getLineColors()} instead.
-     */
-    @Deprecated
-    public ColorStateList getBorderColors() {
-        return getLineColors();
-    }
-
-    /**
-     * <p>Return the current color selected for normal border.</p>
-     *
-     * @return Returns the current border color.
-     * @deprecated Use {@link #getCurrentLineColor()} instead.
-     */
-    @ColorInt
-    @Deprecated
-    public int getCurrentBorderColor() {
-        return getCurrentLineColor();
-    }
-
-    /**
      * Sets the line color for all the states (normal, selected,
      * focused) to be this color.
      *
@@ -722,29 +652,6 @@ public class PinView extends AppCompatEditText {
     @ColorInt
     public int getCurrentLineColor() {
         return mCurLineColor;
-    }
-
-    /**
-     * Sets the border width.
-     *
-     * @attr ref R.styleable#PinView_borderWidth
-     * @see #getBorderWidth()
-     * @deprecated Use {@link #setLineWidth(int)} instead.
-     */
-    @Deprecated
-    public void setBorderWidth(@Px int borderWidth) {
-        setLineWidth(borderWidth);
-    }
-
-    /**
-     * @return Returns the width of the box's border.
-     * @see #setBorderWidth(int)
-     * @deprecated Use {@link #getLineWidth()} instead.
-     */
-    @Px
-    @Deprecated
-    public int getBorderWidth() {
-        return getLineWidth();
     }
 
     /**
@@ -827,29 +734,6 @@ public class PinView extends AppCompatEditText {
     @Px
     public int getItemSpacing() {
         return mPinItemSpacing;
-    }
-
-    /**
-     * Sets the height and width of item.
-     *
-     * @attr ref R.styleable#PinView_itemSize
-     * @see #getItemSize()
-     * @deprecated Use {@link #setItemHeight(float)} or {@link #setItemWidth(float)} instead.
-     */
-    @Deprecated
-    public void setItemSize(float itemSize) {
-        mPinItemWidth = mPinItemHeight = mPinItemSize = itemSize;
-        requestLayout();
-    }
-
-    /**
-     * @return Returns the size of item.
-     * @see #setItemSize(float)
-     * @deprecated Use {@link #getItemHeight()} or {@link #getItemWidth()} instead.
-     */
-    @Deprecated
-    public float getItemSize() {
-        return mPinItemSize;
     }
 
     /**
