@@ -582,8 +582,7 @@ public class PinView extends AppCompatEditText {
 
     @Override
     protected MovementMethod getDefaultMovementMethod() {
-        // we don't need arrow key, return null will also disable the copy/paste/cut pop-up menu.
-        return null;
+        return DefaultMovementMethod.getInstance();
     }
 
     /**
