@@ -645,8 +645,8 @@ public class PinView extends AppCompatEditText {
      * @see #getLineWidth()
      */
     public void setLineWidth(@Px int borderWidth) {
-        checkItemRadius();
         mLineWidth = borderWidth;
+        checkItemRadius();
         requestLayout();
     }
 
@@ -686,8 +686,8 @@ public class PinView extends AppCompatEditText {
      * @see #getItemRadius()
      */
     public void setItemRadius(@Px int itemRadius) {
-        checkItemRadius();
         mPinItemRadius = itemRadius;
+        checkItemRadius();
         requestLayout();
     }
 
@@ -747,8 +747,8 @@ public class PinView extends AppCompatEditText {
      * @see #getItemWidth()
      */
     public void setItemWidth(float itemWidth) {
-        checkItemRadius();
         mPinItemWidth = itemWidth;
+        checkItemRadius();
         requestLayout();
     }
 
@@ -791,7 +791,6 @@ public class PinView extends AppCompatEditText {
      * @see #getCursorWidth()
      */
     public void setCursorWidth(@Px int width) {
-        checkItemRadius();
         mCursorWidth = width;
         if (isCursorVisible()) {
             invalidateCursor(true);
