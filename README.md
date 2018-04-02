@@ -15,11 +15,13 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.3.0'
+   compile 'com.chaos.view:pinview:1.3.1'
 }
 ```
 
 ## Usage
+
+PinView inherits from EditText, which means you can use all the APIs from EditText.
 
 ### Step 1:
 
@@ -74,6 +76,7 @@ pinView.setCursorVisible(false);
 pinView.setCursorColor(
         ResourcesCompat.getColor(getResources(), R.color.line_selected, getTheme()));
 pinView.setCursorWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
+pinView.addTextChangedListener(new TextWatcher() {...});
 ```
 
 ### Step 2:

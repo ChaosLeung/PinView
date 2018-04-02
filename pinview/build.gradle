@@ -38,12 +38,12 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    testImplementation 'junit:junit:4.12'
 }
 
 apply from: 'publish.gradle'

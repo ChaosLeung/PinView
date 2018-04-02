@@ -582,8 +582,7 @@ public class PinView extends AppCompatEditText {
 
     @Override
     protected MovementMethod getDefaultMovementMethod() {
-        // we don't need arrow key, return null will also disable the copy/paste/cut pop-up menu.
-        return null;
+        return DefaultMovementMethod.getInstance();
     }
 
     /**
@@ -646,8 +645,8 @@ public class PinView extends AppCompatEditText {
      * @see #getLineWidth()
      */
     public void setLineWidth(@Px int borderWidth) {
-        checkItemRadius();
         mLineWidth = borderWidth;
+        checkItemRadius();
         requestLayout();
     }
 
@@ -687,8 +686,8 @@ public class PinView extends AppCompatEditText {
      * @see #getItemRadius()
      */
     public void setItemRadius(@Px int itemRadius) {
-        checkItemRadius();
         mPinItemRadius = itemRadius;
+        checkItemRadius();
         requestLayout();
     }
 
@@ -748,8 +747,8 @@ public class PinView extends AppCompatEditText {
      * @see #getItemWidth()
      */
     public void setItemWidth(float itemWidth) {
-        checkItemRadius();
         mPinItemWidth = itemWidth;
+        checkItemRadius();
         requestLayout();
     }
 
@@ -792,7 +791,6 @@ public class PinView extends AppCompatEditText {
      * @see #getCursorWidth()
      */
     public void setCursorWidth(@Px int width) {
-        checkItemRadius();
         mCursorWidth = width;
         if (isCursorVisible()) {
             invalidateCursor(true);
