@@ -46,7 +46,7 @@ import android.view.inputmethod.EditorInfo;
  * Provides a widget for enter PIN/OTP/password etc.
  *
  * @author Chaos Leong
- *         01/04/2017
+ * 01/04/2017
  */
 public class PinView extends AppCompatEditText {
 
@@ -67,8 +67,8 @@ public class PinView extends AppCompatEditText {
 
     private int mPinItemCount;
 
-    private float mPinItemWidth;
-    private float mPinItemHeight;
+    private int mPinItemWidth;
+    private int mPinItemHeight;
     private int mPinItemRadius;
     private int mPinItemSpacing;
 
@@ -125,14 +125,14 @@ public class PinView extends AppCompatEditText {
 
         mViewType = a.getInt(R.styleable.PinView_viewType, VIEW_TYPE_RECTANGLE);
         mPinItemCount = a.getInt(R.styleable.PinView_itemCount, DEFAULT_COUNT);
-        mPinItemHeight = a.getDimensionPixelSize(R.styleable.PinView_itemHeight,
+        mPinItemHeight = (int) a.getDimension(R.styleable.PinView_itemHeight,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
-        mPinItemWidth = a.getDimensionPixelSize(R.styleable.PinView_itemWidth,
+        mPinItemWidth = (int) a.getDimension(R.styleable.PinView_itemWidth,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
         mPinItemSpacing = a.getDimensionPixelSize(R.styleable.PinView_itemSpacing,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_item_spacing));
-        mPinItemRadius = a.getDimensionPixelSize(R.styleable.PinView_itemRadius, 0);
-        mLineWidth = a.getDimensionPixelSize(R.styleable.PinView_lineWidth,
+        mPinItemRadius = (int) a.getDimension(R.styleable.PinView_itemRadius, 0);
+        mLineWidth = (int) a.getDimension(R.styleable.PinView_lineWidth,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_item_line_width));
         mLineColor = a.getColorStateList(R.styleable.PinView_lineColor);
         isCursorVisible = a.getBoolean(R.styleable.PinView_android_cursorVisible, true);
@@ -183,14 +183,14 @@ public class PinView extends AppCompatEditText {
 
     private void checkItemRadius() {
         if (mViewType == VIEW_TYPE_LINE) {
-            int halfOfLineWidth = mLineWidth / 2;
+            float halfOfLineWidth = ((float) mLineWidth) / 2;
             if (mPinItemRadius > halfOfLineWidth) {
-                throw new RuntimeException("The itemRadius can not be greater than lineWidth when viewType is line");
+                throw new IllegalArgumentException("The itemRadius can not be greater than lineWidth when viewType is line");
             }
         }
-        int halfOfItemWidth = (int) (mPinItemWidth / 2);
+        float halfOfItemWidth = ((float) mPinItemWidth) / 2;
         if (mPinItemRadius > halfOfItemWidth) {
-            throw new RuntimeException("The itemRadius can not be greater than itemWidth");
+            throw new IllegalArgumentException("The itemRadius can not be greater than itemWidth");
         }
     }
 
@@ -204,14 +204,14 @@ public class PinView extends AppCompatEditText {
         int width;
         int height;
 
-        float boxHeight = mPinItemHeight;
+        int boxHeight = mPinItemHeight;
 
         if (widthMode == MeasureSpec.EXACTLY) {
             // Parent has told us how big to be. So be it.
             width = widthSize;
         } else {
-            float boxesWidth = (mPinItemCount - 1) * mPinItemSpacing + mPinItemCount * mPinItemWidth;
-            width = Math.round(boxesWidth + ViewCompat.getPaddingEnd(this) + ViewCompat.getPaddingStart(this));
+            int boxesWidth = (mPinItemCount - 1) * mPinItemSpacing + mPinItemCount * mPinItemWidth;
+            width = boxesWidth + ViewCompat.getPaddingEnd(this) + ViewCompat.getPaddingStart(this);
             if (mPinItemSpacing == 0) {
                 width -= (mPinItemCount - 1) * mLineWidth;
             }
@@ -221,7 +221,7 @@ public class PinView extends AppCompatEditText {
             // Parent has told us how big to be. So be it.
             height = heightSize;
         } else {
-            height = Math.round(boxHeight + getPaddingTop() + getPaddingBottom());
+            height = boxHeight + getPaddingTop() + getPaddingBottom();
         }
 
         setMeasuredDimension(width, height);
@@ -377,7 +377,7 @@ public class PinView extends AppCompatEditText {
         }
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(((float) mLineWidth) / 10);
-        float halfLineWidth = (float) mLineWidth / 2;
+        float halfLineWidth = ((float) mLineWidth) / 2;
         mItemLineRect.set(mItemBorderRect.left, mItemBorderRect.bottom - halfLineWidth, mItemBorderRect.right, mItemBorderRect.bottom + halfLineWidth);
 
         updateRoundRectPath(mItemLineRect, mPinItemRadius, mPinItemRadius, l, r);
@@ -464,7 +464,7 @@ public class PinView extends AppCompatEditText {
     }
 
     private void updateItemRectF(int i) {
-        float halfLineWidth = (float) mLineWidth / 2;
+        float halfLineWidth = ((float) mLineWidth) / 2;
         float left = getScrollX() + ViewCompat.getPaddingStart(this) + i * (mPinItemSpacing + mPinItemWidth) + halfLineWidth;
         if (mPinItemSpacing == 0 && i > 0) {
             left = left - (mLineWidth) * i;
@@ -497,8 +497,8 @@ public class PinView extends AppCompatEditText {
         paint.getTextBounds(text.toString(), charAt, charAt + 1, mTextRect);
         float cx = mItemCenterPoint.x;
         float cy = mItemCenterPoint.y;
-        float x = cx - Math.abs(mTextRect.width()) / 2 - mTextRect.left;
-        float y = cy + Math.abs(mTextRect.height()) / 2 - mTextRect.bottom;// always center vertical
+        float x = cx - Math.abs((float) mTextRect.width()) / 2 - mTextRect.left;
+        float y = cy + Math.abs((float) mTextRect.height()) / 2 - mTextRect.bottom;// always center vertical
         canvas.drawText(text, charAt, charAt + 1, x, y, paint);
     }
 
@@ -654,7 +654,6 @@ public class PinView extends AppCompatEditText {
      * @return Returns the width of the item's line.
      * @see #setLineWidth(int)
      */
-    @Px
     public int getLineWidth() {
         return mLineWidth;
     }
@@ -695,7 +694,6 @@ public class PinView extends AppCompatEditText {
      * @return Returns the radius of square.
      * @see #setItemRadius(int)
      */
-    @Px
     public int getItemRadius() {
         return mPinItemRadius;
     }
@@ -726,7 +724,7 @@ public class PinView extends AppCompatEditText {
      * @attr ref R.styleable#PinView_itemHeight
      * @see #getItemHeight()
      */
-    public void setItemHeight(float itemHeight) {
+    public void setItemHeight(@Px int itemHeight) {
         mPinItemHeight = itemHeight;
         updateCursorHeight();
         requestLayout();
@@ -734,9 +732,9 @@ public class PinView extends AppCompatEditText {
 
     /**
      * @return Returns the height of item.
-     * @see #setItemHeight(float)
+     * @see #setItemHeight(int)
      */
-    public float getItemHeight() {
+    public int getItemHeight() {
         return mPinItemHeight;
     }
 
@@ -746,7 +744,7 @@ public class PinView extends AppCompatEditText {
      * @attr ref R.styleable#PinView_itemWidth
      * @see #getItemWidth()
      */
-    public void setItemWidth(float itemWidth) {
+    public void setItemWidth(@Px int itemWidth) {
         mPinItemWidth = itemWidth;
         checkItemRadius();
         requestLayout();
@@ -754,9 +752,9 @@ public class PinView extends AppCompatEditText {
 
     /**
      * @return Returns the width of item.
-     * @see #setItemWidth(float)
+     * @see #setItemWidth(int)
      */
-    public float getItemWidth() {
+    public int getItemWidth() {
         return mPinItemWidth;
     }
 
