@@ -28,6 +28,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
@@ -73,8 +74,7 @@ public class PinView extends AppCompatEditText {
     private int mPinItemSpacing;
 
     private final Paint mPaint;
-    private final TextPaint mTextPaint;
-    private final Paint mAnimatorTextPaint;
+    private final TextPaint mAnimatorTextPaint = new TextPaint();
 
     private ColorStateList mLineColor;
     private int mCurLineColor = Color.BLACK;
@@ -112,12 +112,7 @@ public class PinView extends AppCompatEditText {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.STROKE);
 
-        mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.density = res.getDisplayMetrics().density;
-        mTextPaint.setStyle(Paint.Style.FILL);
-        mTextPaint.setTextSize(getTextSize());
-
-        mAnimatorTextPaint = new TextPaint(mTextPaint);
+        mAnimatorTextPaint.set(getPaint());
 
         final Resources.Theme theme = context.getTheme();
 
@@ -155,6 +150,19 @@ public class PinView extends AppCompatEditText {
 
         super.setCursorVisible(false);
         setTextIsSelectable(false);
+    }
+
+    @Override
+    public void setTypeface(Typeface tf, int style) {
+        super.setTypeface(tf, style);
+    }
+
+    @Override
+    public void setTypeface(Typeface tf) {
+        super.setTypeface(tf);
+        if (mAnimatorTextPaint != null) {
+            mAnimatorTextPaint.set(getPaint());
+        }
     }
 
     private void setMaxLength(int maxLength) {
@@ -292,7 +300,7 @@ public class PinView extends AppCompatEditText {
         mPaint.setColor(mCurLineColor);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mLineWidth);
-        mTextPaint.setColor(getCurrentTextColor());
+        getPaint().setColor(getCurrentTextColor());
     }
 
     private void drawPinView(Canvas canvas) {
@@ -511,10 +519,10 @@ public class PinView extends AppCompatEditText {
 
     private Paint getPaintByIndex(int i) {
         if (isAnimationEnable && i == getText().length() - 1) {
-            mAnimatorTextPaint.setColor(mTextPaint.getColor());
+            mAnimatorTextPaint.setColor(getPaint().getColor());
             return mAnimatorTextPaint;
         } else {
-            return mTextPaint;
+            return getPaint();
         }
     }
 
