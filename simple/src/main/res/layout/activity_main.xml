@@ -39,6 +39,7 @@
         android:textStyle="bold"
         app:cursorColor="@color/line_selected"
         app:cursorWidth="2dp"
+        app:itemBackground="@mipmap/ic_launcher"
         app:itemCount="5"
         app:itemHeight="48dp"
         app:itemRadius="4dp"
@@ -71,9 +72,10 @@
         android:layout_height="wrap_content"
         android:inputType="text"
         android:padding="@dimen/common_padding"
-        android:textStyle="italic"
         android:text="您好"
         android:textColor="@color/colorPrimary"
+        android:textStyle="italic"
+        app:itemBackground="@color/text_default"
         app:itemCount="2" />
 
     <com.chaos.view.PinView
