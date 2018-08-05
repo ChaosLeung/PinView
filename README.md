@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.3.2'
+   compile 'com.chaos.view:pinview:1.4.0'
 }
 ```
 
@@ -56,7 +56,7 @@ Add PinView in your layout.
 #### Java
 
 ``` Java
-PinView pinView = (PinView) findViewById(R.id.secondPinView);
+final PinView pinView = findViewById(R.id.secondPinView);
 pinView.setTextColor(
         ResourcesCompat.getColor(getResources(), R.color.colorAccent, getTheme()));
 pinView.setTextColor(
@@ -77,6 +77,9 @@ pinView.setCursorColor(
         ResourcesCompat.getColor(getResources(), R.color.line_selected, getTheme()));
 pinView.setCursorWidth(getResources().getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
 pinView.addTextChangedListener(new TextWatcher() {...});
+pinView.setItemBackgroundColor(Color.BLACK);
+pinView.setItemBackground(getResources().getDrawable(R.drawable.item_background));
+pinView.setItemBackgroundResources(R.drawable.item_background);
 ```
 
 ### Step 2:
@@ -102,7 +105,7 @@ or use the `PinWidget.PinView` style.
 
 ### Step 3 (Optional):
 
-To highlight current item,
+To highlight current item, use 'selected' state, in other words,
 
 add `android:state_selected="true"` to `app:lineColor`
 
@@ -125,9 +128,10 @@ or add `android:cursorVisible="true"`.
 * **itemSpacing**, the spacing between two items.
 * **lineWidth**, the line (border) width.
 * **lineColor**, the line (border) colors.
-* **viewType**, the view type of PinView, currently this will be one of `rectangle` or `line`.
+* **viewType**, the view type of PinView, currently this will be one of `rectangle`, `line` or `none`.
 * **cursorColor**, the cursor color.
 * **cursorWidth**, the width of cursor.
+* **itemBackground**, the item background.
 
 ## Thanks
 
@@ -136,7 +140,7 @@ or add `android:cursorVisible="true"`.
 ## License
 
 
-    Copyright 2017 Chaos Leong
+    Copyright 2017-2018 Chaos Leong
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
