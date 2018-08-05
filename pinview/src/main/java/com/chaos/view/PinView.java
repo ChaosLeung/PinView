@@ -29,9 +29,13 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
@@ -61,8 +65,12 @@ public class PinView extends AppCompatEditText {
 
     private static final InputFilter[] NO_FILTERS = new InputFilter[0];
 
+    private static final int[] HIGHLIGHT_STATES = new int[]{
+            android.R.attr.state_selected};
+
     private static final int VIEW_TYPE_RECTANGLE = 0;
     private static final int VIEW_TYPE_LINE = 1;
+    private static final int VIEW_TYPE_NONE = 2;
 
     private int mViewType;
 
@@ -95,6 +103,9 @@ public class PinView extends AppCompatEditText {
     private float mCursorHeight;
     private int mCursorWidth;
     private int mCursorColor;
+
+    private int mItemBackgroundResource;
+    private Drawable mItemBackground;
 
     public PinView(Context context) {
         this(context, null);
@@ -134,6 +145,8 @@ public class PinView extends AppCompatEditText {
         mCursorColor = a.getColor(R.styleable.PinView_cursorColor, getCurrentTextColor());
         mCursorWidth = a.getDimensionPixelSize(R.styleable.PinView_cursorWidth,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
+
+        mItemBackground = a.getDrawable(R.styleable.PinView_itemBackground);
 
         a.recycle();
 
@@ -195,10 +208,11 @@ public class PinView extends AppCompatEditText {
             if (mPinItemRadius > halfOfLineWidth) {
                 throw new IllegalArgumentException("The itemRadius can not be greater than lineWidth when viewType is line");
             }
-        }
-        float halfOfItemWidth = ((float) mPinItemWidth) / 2;
-        if (mPinItemRadius > halfOfItemWidth) {
-            throw new IllegalArgumentException("The itemRadius can not be greater than itemWidth");
+        } else if (mViewType == VIEW_TYPE_RECTANGLE) {
+            float halfOfItemWidth = ((float) mPinItemWidth) / 2;
+            if (mPinItemRadius > halfOfItemWidth) {
+                throw new IllegalArgumentException("The itemRadius can not be greater than itemWidth");
+            }
         }
     }
 
@@ -308,9 +322,17 @@ public class PinView extends AppCompatEditText {
             updateItemRectF(i);
             updateCenterPoint();
 
+            canvas.save();
+            if (mViewType == VIEW_TYPE_RECTANGLE) {
+                updatePinBoxPath(i);
+                canvas.clipPath(mPath);
+            }
+            drawItemBackground(canvas, false);
+            canvas.restore();
+
             if (mViewType == VIEW_TYPE_RECTANGLE) {
                 drawPinBox(canvas, i);
-            } else {
+            } else if (mViewType == VIEW_TYPE_LINE) {
                 drawPinLine(canvas, i);
             }
 
@@ -335,13 +357,21 @@ public class PinView extends AppCompatEditText {
             updateItemRectF(index);
             updateCenterPoint();
 
-            mPaint.setColor(getLineColorForState(android.R.attr.state_selected));
+            canvas.save();
+            if (mViewType == VIEW_TYPE_RECTANGLE) {
+                updatePinBoxPath(index);
+                canvas.clipPath(mPath);
+            }
+            drawItemBackground(canvas, true);
+            canvas.restore();
+
+            mPaint.setColor(getLineColorForState(HIGHLIGHT_STATES));
 
             drawCursor(canvas);
 
             if (mViewType == VIEW_TYPE_RECTANGLE) {
                 drawPinBox(canvas, index);
-            } else {
+            } else if (mViewType == VIEW_TYPE_LINE) {
                 drawPinLine(canvas, index);
             }
         }
@@ -351,7 +381,22 @@ public class PinView extends AppCompatEditText {
         return mLineColor != null ? mLineColor.getColorForState(states, mCurLineColor) : mCurLineColor;
     }
 
-    private void drawPinBox(Canvas canvas, int i) {
+    private void drawItemBackground(Canvas canvas, boolean highlight) {
+        if (mItemBackground == null) {
+            return;
+        }
+        float delta = (float) mLineWidth / 2;
+        int left = Math.round(mItemBorderRect.left - delta);
+        int top = Math.round(mItemBorderRect.top - delta);
+        int right = Math.round(mItemBorderRect.right + delta);
+        int bottom = Math.round(mItemBorderRect.bottom + delta);
+
+        mItemBackground.setBounds(left, top, right, bottom);
+        mItemBackground.setState(highlight ? HIGHLIGHT_STATES : getDrawableState());
+        mItemBackground.draw(canvas);
+    }
+
+    private void updatePinBoxPath(int i) {
         boolean drawRightCorner = false;
         boolean drawLeftCorner = false;
         if (mPinItemSpacing != 0) {
@@ -365,6 +410,10 @@ public class PinView extends AppCompatEditText {
             }
         }
         updateRoundRectPath(mItemBorderRect, mPinItemRadius, mPinItemRadius, drawLeftCorner, drawRightCorner);
+    }
+
+    private void drawPinBox(Canvas canvas, int i) {
+//        updatePinBoxPath(canvas, i);
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -386,7 +435,11 @@ public class PinView extends AppCompatEditText {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(((float) mLineWidth) / 10);
         float halfLineWidth = ((float) mLineWidth) / 2;
-        mItemLineRect.set(mItemBorderRect.left, mItemBorderRect.bottom - halfLineWidth, mItemBorderRect.right, mItemBorderRect.bottom + halfLineWidth);
+        mItemLineRect.set(
+                mItemBorderRect.left - halfLineWidth,
+                mItemBorderRect.bottom - halfLineWidth,
+                mItemBorderRect.right + halfLineWidth,
+                mItemBorderRect.bottom + halfLineWidth);
 
         updateRoundRectPath(mItemLineRect, mPinItemRadius, mPinItemRadius, l, r);
         canvas.drawPath(mPath, mPaint);
@@ -788,7 +841,7 @@ public class PinView extends AppCompatEditText {
         updateCursorHeight();
     }
 
-    //region Cursor
+    //region Cursorint
 
     /**
      * Sets the width (in pixels) of cursor.
@@ -835,6 +888,48 @@ public class PinView extends AppCompatEditText {
      */
     public int getCursorColor() {
         return mCursorColor;
+    }
+
+    /**
+     * Set the item background to a given resource. The resource should refer to
+     * a Drawable object or 0 to remove the item background.
+     *
+     * @param resId The identifier of the resource.
+     * @attr ref R.styleable#PinView_itemBackground
+     */
+    public void setItemBackgroundResources(@DrawableRes int resId) {
+        if (resId != 0 && mItemBackgroundResource != resId) {
+            return;
+        }
+        mItemBackground = ResourcesCompat.getDrawable(getResources(), resId, getContext().getTheme());
+        setItemBackground(mItemBackground);
+        mItemBackgroundResource = resId;
+    }
+
+    /**
+     * Sets the item background color for this view.
+     *
+     * @param color the color of the item background
+     */
+    public void setItemBackgroundColor(@ColorInt int color) {
+        if (mItemBackground instanceof ColorDrawable) {
+            ((ColorDrawable) mItemBackground.mutate()).setColor(color);
+            mItemBackgroundResource = 0;
+        } else {
+            setItemBackground(new ColorDrawable(color));
+        }
+    }
+
+    /**
+     * Set the item background to a given Drawable, or remove the background.
+     *
+     * @param background The Drawable to use as the item background, or null to remove the
+     *                   item background
+     */
+    public void setItemBackground(Drawable background) {
+        mItemBackgroundResource = 0;
+        mItemBackground = background;
+        invalidate();
     }
 
     @Override
