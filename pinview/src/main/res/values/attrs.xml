@@ -31,9 +31,11 @@
         <attr name="viewType" format="enum">
             <enum name="rectangle" value="0" />
             <enum name="line" value="1" />
+            <enum name="none" value="2" />
         </attr>
         <attr name="android:cursorVisible" />
         <attr name="cursorWidth" format="dimension" />
         <attr name="cursorColor" format="reference|color" />
+        <attr name="itemBackground" format="reference|color" />
     </declare-styleable>
 </resources>

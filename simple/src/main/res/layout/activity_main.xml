@@ -30,14 +30,16 @@
         style="@style/PinWidget.PinView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:cursorVisible="true"
         android:hint="Hint."
         android:inputType="text"
         android:padding="@dimen/common_padding"
         android:textColor="@color/text_colors"
         android:textSize="18sp"
-        android:cursorVisible="true"
+        android:textStyle="bold"
         app:cursorColor="@color/line_selected"
         app:cursorWidth="2dp"
+        app:itemBackground="@mipmap/ic_launcher"
         app:itemCount="5"
         app:itemHeight="48dp"
         app:itemRadius="4dp"
@@ -72,6 +74,8 @@
         android:padding="@dimen/common_padding"
         android:text="您好"
         android:textColor="@color/colorPrimary"
+        android:textStyle="italic"
+        app:itemBackground="@color/text_default"
         app:itemCount="2" />
 
     <com.chaos.view.PinView

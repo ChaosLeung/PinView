@@ -20,6 +20,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="text_selected">#b0003a</color>
     <color name="text_focused">#E91E63</color>
     <color name="text_default">#F8BBD0</color>
     <color name="text_hint_default">#BDBDBD</color>

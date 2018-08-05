@@ -17,6 +17,7 @@
 package com.chaos.view.example;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        pinView.setItemBackgroundColor(Color.BLACK);
+        pinView.setItemBackground(getResources().getDrawable(R.drawable.item_background));
+        pinView.setItemBackgroundResources(R.drawable.item_background);
     }
 
     @Override
