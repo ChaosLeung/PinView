@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.4.0'
+   compile 'com.chaos.view:pinview:1.4.1'
 }
 ```
 
@@ -35,12 +35,14 @@ Add PinView in your layout.
     style="@style/PinWidget.PinView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:cursorVisible="true"
     android:hint="Hint."
     android:inputType="text"
+    android:itemBackground="@mipmap/ic_launcher"
     android:padding="@dimen/common_padding"
     android:textColor="@color/text_colors"
     android:textSize="18sp"
-    android:cursorVisible="true"
+    android:textStyle="bold"
     app:cursorColor="@color/line_selected"
     app:cursorWidth="2dp"
     app:itemCount="5"
@@ -48,7 +50,7 @@ Add PinView in your layout.
     app:itemRadius="4dp"
     app:itemSpacing="0dp"
     app:itemWidth="36dp"
-    app:lineColor="@color/line_colors"
+    app:lineColor="@color/line_selected"
     app:lineWidth="2dp"
     app:viewType="rectangle" />
 ```
@@ -129,6 +131,7 @@ or add `android:cursorVisible="true"`.
 * **lineWidth**, the line (border) width.
 * **lineColor**, the line (border) colors.
 * **viewType**, the view type of PinView, currently this will be one of `rectangle`, `line` or `none`.
+* **cursorVisible**, show cursor or not.
 * **cursorColor**, the cursor color.
 * **cursorWidth**, the width of cursor.
 * **itemBackground**, the item background.
