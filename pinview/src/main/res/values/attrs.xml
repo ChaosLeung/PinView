@@ -36,6 +36,6 @@
         <attr name="android:cursorVisible" />
         <attr name="cursorWidth" format="dimension" />
         <attr name="cursorColor" format="reference|color" />
-        <attr name="itemBackground" format="reference|color" />
+        <attr name="android:itemBackground" />
     </declare-styleable>
 </resources>

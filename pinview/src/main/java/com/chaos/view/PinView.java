@@ -146,7 +146,7 @@ public class PinView extends AppCompatEditText {
         mCursorWidth = a.getDimensionPixelSize(R.styleable.PinView_cursorWidth,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
 
-        mItemBackground = a.getDrawable(R.styleable.PinView_itemBackground);
+        mItemBackground = a.getDrawable(R.styleable.PinView_android_itemBackground);
 
         a.recycle();
 
@@ -895,7 +895,7 @@ public class PinView extends AppCompatEditText {
      * a Drawable object or 0 to remove the item background.
      *
      * @param resId The identifier of the resource.
-     * @attr ref R.styleable#PinView_itemBackground
+     * @attr ref R.styleable#PinView_android_itemBackground
      */
     public void setItemBackgroundResources(@DrawableRes int resId) {
         if (resId != 0 && mItemBackgroundResource != resId) {
