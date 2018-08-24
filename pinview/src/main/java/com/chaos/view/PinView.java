@@ -107,6 +107,8 @@ public class PinView extends AppCompatEditText {
     private int mItemBackgroundResource;
     private Drawable mItemBackground;
 
+    private boolean mHideLineWhenFilled;
+
     public PinView(Context context) {
         this(context, null);
     }
@@ -147,6 +149,7 @@ public class PinView extends AppCompatEditText {
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
 
         mItemBackground = a.getDrawable(R.styleable.PinView_android_itemBackground);
+        mHideLineWhenFilled = a.getBoolean(R.styleable.PinView_hideLineWhenFilled, false);
 
         a.recycle();
 
@@ -418,6 +421,9 @@ public class PinView extends AppCompatEditText {
     }
 
     private void drawPinLine(Canvas canvas, int i) {
+        if (mHideLineWhenFilled && i < getText().length()) {
+            return;
+        }
         boolean l, r;
         l = r = true;
         if (mPinItemSpacing == 0 && mPinItemCount > 1) {
@@ -827,6 +833,18 @@ public class PinView extends AppCompatEditText {
      */
     public void setAnimationEnable(boolean enable) {
         isAnimationEnable = enable;
+    }
+
+    /**
+     * Specifies whether the line view should be hidden or visible when text entered.
+     * By the default, this flag is false and the line is always drawn.
+     *
+     * @attr ref R.styleable#PinView_hideLineWhenFilled
+     * @param hideLineWhenFilled True to hide line view on a position where text entered,
+     *                           False to always show line view
+     */
+    public void setHideLineWhenFilled(boolean hideLineWhenFilled) {
+        this.mHideLineWhenFilled = hideLineWhenFilled;
     }
 
     @Override
