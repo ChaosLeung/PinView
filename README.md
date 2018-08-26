@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.4.1'
+   compile 'com.chaos.view:pinview:1.4.2'
 }
 ```
 
@@ -31,7 +31,7 @@ Add PinView in your layout.
 
 ``` xml
 <com.chaos.view.PinView
-    android:id="@+id/pinView"
+    android:id="@+id/firstPinView"
     style="@style/PinWidget.PinView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -45,12 +45,13 @@ Add PinView in your layout.
     android:textStyle="bold"
     app:cursorColor="@color/line_selected"
     app:cursorWidth="2dp"
+    app:hideLineWhenFilled="true"
     app:itemCount="5"
     app:itemHeight="48dp"
     app:itemRadius="4dp"
     app:itemSpacing="0dp"
-    app:itemWidth="36dp"
-    app:lineColor="@color/line_selected"
+    app:itemWidth="48dp"
+    app:lineColor="@color/line_colors"
     app:lineWidth="2dp"
     app:viewType="rectangle" />
 ```
@@ -82,6 +83,7 @@ pinView.addTextChangedListener(new TextWatcher() {...});
 pinView.setItemBackgroundColor(Color.BLACK);
 pinView.setItemBackground(getResources().getDrawable(R.drawable.item_background));
 pinView.setItemBackgroundResources(R.drawable.item_background);
+pinView.setHideLineWhenFilled(false);
 ```
 
 ### Step 2:
@@ -135,6 +137,7 @@ or add `android:cursorVisible="true"`.
 * **cursorColor**, the cursor color.
 * **cursorWidth**, the width of cursor.
 * **itemBackground**, the item background.
+* **hideLineWhenFilled**, specifies whether the line (border) should be hidden or visible when text entered.
 
 ## Thanks
 

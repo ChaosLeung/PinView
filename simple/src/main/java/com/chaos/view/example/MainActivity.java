@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         pinView.setItemBackgroundColor(Color.BLACK);
         pinView.setItemBackground(getResources().getDrawable(R.drawable.item_background));
         pinView.setItemBackgroundResources(R.drawable.item_background);
+        pinView.setHideLineWhenFilled(false);
     }
 
     @Override

@@ -44,8 +44,8 @@
         app:itemHeight="48dp"
         app:itemRadius="4dp"
         app:itemSpacing="0dp"
-        app:itemWidth="36dp"
-        app:lineColor="@color/line_selected"
+        app:itemWidth="48dp"
+        app:lineColor="@color/line_colors"
         app:lineWidth="2dp"
         app:viewType="rectangle" />
 
@@ -64,19 +64,9 @@
         android:padding="@dimen/common_padding"
         android:text="PIN"
         android:textColor="@color/colorAccent"
+        app:hideLineWhenFilled="true"
         app:itemCount="3"
         app:viewType="line" />
-
-    <com.chaos.view.PinView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:padding="@dimen/common_padding"
-        android:text="1"
-        android:textColor="@color/colorAccent"
-        app:itemCount="3"
-        app:viewType="line"
-        app:hideViewWhenEntered="true" />
 
     <com.chaos.view.PinView
         android:layout_width="wrap_content"
@@ -93,6 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="numberPassword"
+        android:itemBackground="@mipmap/ic_launcher"
         android:padding="@dimen/common_padding"
         android:text="1"
         android:textColor="@color/colorAccent"
