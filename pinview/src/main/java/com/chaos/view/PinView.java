@@ -321,7 +321,11 @@ public class PinView extends AppCompatEditText {
     }
 
     private void drawPinView(Canvas canvas) {
+        int highlightIdx = getText().length();
         for (int i = 0; i < mPinItemCount; i++) {
+            boolean highlight = isFocused() && highlightIdx == i;
+            mPaint.setColor(highlight ? getLineColorForState(HIGHLIGHT_STATES) : mCurLineColor);
+
             updateItemRectF(i);
             updateCenterPoint();
 
@@ -330,8 +334,12 @@ public class PinView extends AppCompatEditText {
                 updatePinBoxPath(i);
                 canvas.clipPath(mPath);
             }
-            drawItemBackground(canvas, false);
+            drawItemBackground(canvas, highlight);
             canvas.restore();
+
+            if (highlight) {
+                drawCursor(canvas);
+            }
 
             if (mViewType == VIEW_TYPE_RECTANGLE) {
                 drawPinBox(canvas, i);
@@ -355,28 +363,13 @@ public class PinView extends AppCompatEditText {
         }
 
         // highlight the next item
-        if (isFocused() && getText().length() != mPinItemCount) {
+        if (isFocused() && getText().length() != mPinItemCount && mViewType == VIEW_TYPE_RECTANGLE) {
             int index = getText().length();
             updateItemRectF(index);
             updateCenterPoint();
-
-            canvas.save();
-            if (mViewType == VIEW_TYPE_RECTANGLE) {
-                updatePinBoxPath(index);
-                canvas.clipPath(mPath);
-            }
-            drawItemBackground(canvas, true);
-            canvas.restore();
-
+            updatePinBoxPath(index);
             mPaint.setColor(getLineColorForState(HIGHLIGHT_STATES));
-
-            drawCursor(canvas);
-
-            if (mViewType == VIEW_TYPE_RECTANGLE) {
-                drawPinBox(canvas, index);
-            } else if (mViewType == VIEW_TYPE_LINE) {
-                drawPinLine(canvas, index);
-            }
+            drawPinBox(canvas, index);
         }
     }
 
@@ -416,7 +409,9 @@ public class PinView extends AppCompatEditText {
     }
 
     private void drawPinBox(Canvas canvas, int i) {
-//        updatePinBoxPath(canvas, i);
+        if (mHideLineWhenFilled && i < getText().length()) {
+            return;
+        }
         canvas.drawPath(mPath, mPaint);
     }
 
@@ -836,12 +831,12 @@ public class PinView extends AppCompatEditText {
     }
 
     /**
-     * Specifies whether the line view should be hidden or visible when text entered.
+     * Specifies whether the line (border) should be hidden or visible when text entered.
      * By the default, this flag is false and the line is always drawn.
      *
+     * @param hideLineWhenFilled true to hide line on a position where text entered,
+     *                           false to always show line
      * @attr ref R.styleable#PinView_hideLineWhenFilled
-     * @param hideLineWhenFilled True to hide line view on a position where text entered,
-     *                           False to always show line view
      */
     public void setHideLineWhenFilled(boolean hideLineWhenFilled) {
         this.mHideLineWhenFilled = hideLineWhenFilled;
@@ -859,7 +854,51 @@ public class PinView extends AppCompatEditText {
         updateCursorHeight();
     }
 
-    //region Cursorint
+    //region ItemBackground
+    /**
+     * Set the item background to a given resource. The resource should refer to
+     * a Drawable object or 0 to remove the item background.
+     *
+     * @param resId The identifier of the resource.
+     * @attr ref R.styleable#PinView_android_itemBackground
+     */
+    public void setItemBackgroundResources(@DrawableRes int resId) {
+        if (resId != 0 && mItemBackgroundResource != resId) {
+            return;
+        }
+        mItemBackground = ResourcesCompat.getDrawable(getResources(), resId, getContext().getTheme());
+        setItemBackground(mItemBackground);
+        mItemBackgroundResource = resId;
+    }
+
+    /**
+     * Sets the item background color for this view.
+     *
+     * @param color the color of the item background
+     */
+    public void setItemBackgroundColor(@ColorInt int color) {
+        if (mItemBackground instanceof ColorDrawable) {
+            ((ColorDrawable) mItemBackground.mutate()).setColor(color);
+            mItemBackgroundResource = 0;
+        } else {
+            setItemBackground(new ColorDrawable(color));
+        }
+    }
+
+    /**
+     * Set the item background to a given Drawable, or remove the background.
+     *
+     * @param background The Drawable to use as the item background, or null to remove the
+     *                   item background
+     */
+    public void setItemBackground(Drawable background) {
+        mItemBackgroundResource = 0;
+        mItemBackground = background;
+        invalidate();
+    }
+    //endregion
+
+    //region Cursor
 
     /**
      * Sets the width (in pixels) of cursor.
@@ -906,48 +945,6 @@ public class PinView extends AppCompatEditText {
      */
     public int getCursorColor() {
         return mCursorColor;
-    }
-
-    /**
-     * Set the item background to a given resource. The resource should refer to
-     * a Drawable object or 0 to remove the item background.
-     *
-     * @param resId The identifier of the resource.
-     * @attr ref R.styleable#PinView_android_itemBackground
-     */
-    public void setItemBackgroundResources(@DrawableRes int resId) {
-        if (resId != 0 && mItemBackgroundResource != resId) {
-            return;
-        }
-        mItemBackground = ResourcesCompat.getDrawable(getResources(), resId, getContext().getTheme());
-        setItemBackground(mItemBackground);
-        mItemBackgroundResource = resId;
-    }
-
-    /**
-     * Sets the item background color for this view.
-     *
-     * @param color the color of the item background
-     */
-    public void setItemBackgroundColor(@ColorInt int color) {
-        if (mItemBackground instanceof ColorDrawable) {
-            ((ColorDrawable) mItemBackground.mutate()).setColor(color);
-            mItemBackgroundResource = 0;
-        } else {
-            setItemBackground(new ColorDrawable(color));
-        }
-    }
-
-    /**
-     * Set the item background to a given Drawable, or remove the background.
-     *
-     * @param background The Drawable to use as the item background, or null to remove the
-     *                   item background
-     */
-    public void setItemBackground(Drawable background) {
-        mItemBackgroundResource = 0;
-        mItemBackground = background;
-        invalidate();
     }
 
     @Override
