@@ -76,7 +76,7 @@
         android:text="您好"
         android:textColor="@color/colorPrimary"
         android:textStyle="italic"
-        app:itemBackground="@color/text_default"
+        android:itemBackground="@color/text_default"
         app:itemCount="2" />
 
     <com.chaos.view.PinView

@@ -31,13 +31,6 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
-import android.support.annotation.Px;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -46,6 +39,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.Px;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.ViewCompat;
 
 /**
  * Provides a widget for enter PIN/OTP/password etc.
@@ -653,7 +654,7 @@ public class PinView extends AppCompatEditText {
      *
      * @param color A color value in the form 0xAARRGGBB.
      *              Do not pass a resource ID. To get a color value from a resource ID, call
-     *              {@link android.support.v4.content.ContextCompat#getColor(Context, int) getColor}.
+     *              {@link androidx.core.content.ContextCompat#getColor(Context, int) getColor}.
      * @attr ref R.styleable#PinView_lineColor
      * @see #setLineColor(ColorStateList)
      * @see #getLineColors()
@@ -926,7 +927,7 @@ public class PinView extends AppCompatEditText {
      *
      * @param color A color value in the form 0xAARRGGBB.
      *              Do not pass a resource ID. To get a color value from a resource ID, call
-     *              {@link android.support.v4.content.ContextCompat#getColor(Context, int) getColor}.
+     *              {@link androidx.core.content.ContextCompat#getColor(Context, int) getColor}.
      * @attr ref R.styleable#PinView_cursorColor
      * @see #getCursorColor()
      */
