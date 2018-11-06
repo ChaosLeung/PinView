@@ -109,6 +109,7 @@ public class PinView extends AppCompatEditText {
     private Drawable mItemBackground;
 
     private boolean mHideLineWhenFilled;
+    private boolean mHighlightLineWhenFilled;
 
     public PinView(Context context) {
         this(context, null);
@@ -151,6 +152,7 @@ public class PinView extends AppCompatEditText {
 
         mItemBackground = a.getDrawable(R.styleable.PinView_android_itemBackground);
         mHideLineWhenFilled = a.getBoolean(R.styleable.PinView_hideLineWhenFilled, false);
+        mHighlightLineWhenFilled = a.getBoolean(R.styleable.PinView_highlightLineWhenFilled, false);
 
         a.recycle();
 
@@ -324,7 +326,13 @@ public class PinView extends AppCompatEditText {
     private void drawPinView(Canvas canvas) {
         int highlightIdx = getText().length();
         for (int i = 0; i < mPinItemCount; i++) {
-            boolean highlight = isFocused() && highlightIdx == i;
+            boolean highlight;
+            if (mHighlightLineWhenFilled) {
+                highlight = i < highlightIdx;
+            } else {
+                highlight = isFocused() && highlightIdx == i;
+            }
+
             mPaint.setColor(highlight ? getLineColorForState(HIGHLIGHT_STATES) : mCurLineColor);
 
             updateItemRectF(i);
