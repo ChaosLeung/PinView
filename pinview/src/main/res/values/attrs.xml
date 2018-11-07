@@ -38,5 +38,6 @@
         <attr name="cursorColor" format="reference|color" />
         <attr name="android:itemBackground" />
         <attr name="hideLineWhenFilled" format="boolean" />
+        <attr name="highlightLineWhenFilled" format="boolean" />
     </declare-styleable>
 </resources>
