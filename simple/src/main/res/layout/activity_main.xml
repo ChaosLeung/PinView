@@ -15,78 +15,84 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context="com.chaos.view.example.MainActivity">
+    android:fillViewport="true"
+    android:layout_height="match_parent" >
 
-    <com.chaos.view.PinView
-        android:id="@+id/firstPinView"
-        style="@style/PinWidget.PinView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:cursorVisible="true"
-        android:hint="Hint."
-        android:inputType="text"
-        android:itemBackground="@mipmap/ic_launcher"
-        android:padding="@dimen/common_padding"
-        android:textColor="@color/text_colors"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cursorColor="@color/line_selected"
-        app:cursorWidth="2dp"
-        app:itemCount="5"
-        app:itemHeight="48dp"
-        app:itemRadius="4dp"
-        app:itemSpacing="0dp"
-        app:itemWidth="48dp"
-        app:lineColor="@color/line_colors"
-        app:lineWidth="2dp"
-        app:viewType="rectangle" />
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context="com.chaos.view.example.MainActivity" >
 
-    <com.chaos.view.PinView
-        android:id="@+id/secondPinView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_padding"
-        android:inputType="number"
-        android:text="1234" />
+        <com.chaos.view.PinView
+            android:id="@+id/firstPinView"
+            style="@style/PinWidget.PinView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:cursorVisible="true"
+            android:hint="Hint."
+            android:inputType="text"
+            android:itemBackground="@mipmap/ic_launcher"
+            android:padding="@dimen/common_padding"
+            android:textColor="@color/text_colors"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cursorColor="@color/line_selected"
+            app:cursorWidth="2dp"
+            app:itemCount="5"
+            app:itemHeight="48dp"
+            app:itemRadius="4dp"
+            app:itemSpacing="0dp"
+            app:itemWidth="48dp"
+            app:lineColor="@color/line_colors"
+            app:lineWidth="2dp"
+            app:viewType="rectangle" />
 
-    <com.chaos.view.PinView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:padding="@dimen/common_padding"
-        android:text="PIN"
-        android:textColor="@color/colorAccent"
-        app:hideLineWhenFilled="true"
-        app:itemCount="3"
-        app:viewType="line" />
+        <com.chaos.view.PinView
+            android:id="@+id/secondPinView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/common_padding"
+            android:inputType="number"
+            android:text="1234" />
 
-    <com.chaos.view.PinView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:padding="@dimen/common_padding"
-        android:text="您好"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="italic"
-        android:itemBackground="@color/text_default"
-        app:itemCount="2" />
+        <com.chaos.view.PinView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:padding="@dimen/common_padding"
+            android:text="PIN"
+            android:textColor="@color/colorAccent"
+            app:hideLineWhenFilled="true"
+            app:itemCount="3"
+            app:viewType="line" />
 
-    <com.chaos.view.PinView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberPassword"
-        android:itemBackground="@mipmap/ic_launcher"
-        android:padding="@dimen/common_padding"
-        android:text="1"
-        android:textColor="@color/colorAccent"
-        app:itemCount="1" />
+        <com.chaos.view.PinView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:padding="@dimen/common_padding"
+            android:text="您好"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="italic"
+            android:itemBackground="@color/text_default"
+            app:itemCount="2" />
 
-</LinearLayout>
+        <com.chaos.view.PinView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="numberPassword"
+            android:itemBackground="@mipmap/ic_launcher"
+            android:padding="@dimen/common_padding"
+            android:text="1"
+            android:textColor="@color/colorAccent"
+            app:itemCount="1" />
+
+    </LinearLayout >
+</ScrollView >
