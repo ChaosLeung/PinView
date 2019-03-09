@@ -36,6 +36,10 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.MovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
@@ -166,7 +170,7 @@ public class PinView extends AppCompatEditText {
         setupAnimator();
 
         super.setCursorVisible(false);
-        setTextIsSelectable(false);
+        disableSelectionMenu();
     }
 
     @Override
@@ -643,10 +647,10 @@ public class PinView extends AppCompatEditText {
                 == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 
-    @Override
+    /*@Override
     protected MovementMethod getDefaultMovementMethod() {
         return DefaultMovementMethod.getInstance();
-    }
+    }*/
 
     /**
      * Sets the line color for all the states (normal, selected,
@@ -1059,6 +1063,38 @@ public class PinView extends AppCompatEditText {
         void uncancel() {
             mCancelled = false;
         }
+    }
+    //endregion
+
+    //region Selection Menu
+    private void disableSelectionMenu() {
+        setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                // no-op
+            }
+        });
+        setLongClickable(false);
+    }
+
+    @Override
+    public boolean isSuggestionsEnabled() {
+        return false;
     }
     //endregion
 

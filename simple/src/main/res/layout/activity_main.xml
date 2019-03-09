@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2017 Chaos Leong
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,20 +14,19 @@
   ~ limitations under the License.
   -->
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:fillViewport="true"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context="com.chaos.view.example.MainActivity" >
+        tools:context="com.chaos.view.example.MainActivity">
 
         <com.chaos.view.PinView
             android:id="@+id/firstPinView"
@@ -52,7 +50,10 @@
             app:itemWidth="48dp"
             app:lineColor="@color/line_colors"
             app:lineWidth="2dp"
-            app:viewType="rectangle" />
+            app:viewType="rectangle">
+
+            <requestFocus />
+        </com.chaos.view.PinView>
 
         <com.chaos.view.PinView
             android:id="@+id/secondPinView"
@@ -77,11 +78,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="text"
+            android:itemBackground="@color/text_default"
             android:padding="@dimen/common_padding"
             android:text="您好"
             android:textColor="@color/colorPrimary"
             android:textStyle="italic"
-            android:itemBackground="@color/text_default"
             app:itemCount="2" />
 
         <com.chaos.view.PinView
@@ -94,5 +95,5 @@
             android:textColor="@color/colorAccent"
             app:itemCount="1" />
 
-    </LinearLayout >
-</ScrollView >
+    </LinearLayout>
+</ScrollView>
