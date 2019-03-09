@@ -7,6 +7,8 @@ Provides a widget for enter PIN/OTP/password etc on Android 4.1+ (API 16).
 
 ## Dependency
 
+PinView has been rebuilt based on AndroidX. If you are still using the android support library, please use 1.4.2.
+
 ``` Groovy
 repositories {
     maven {
@@ -15,7 +17,7 @@ repositories {
 }
 
 dependencies {
-   compile 'com.chaos.view:pinview:1.4.2'
+   implementation 'com.chaos.view:pinview:1.4.3'
 }
 ```
 
