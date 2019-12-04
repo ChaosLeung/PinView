@@ -134,6 +134,8 @@ or add `android:cursorVisible="true"`.
 * **itemSpacing**, the spacing between two items.
 * **lineWidth**, the line (border) width.
 * **lineColor**, the line (border) colors.
+* **isExtensible**, boolean to make length of your pin code flexible; default value is false
+* **maxItemCount**, the maximum length of pin code if the pinview is extensible
 * **viewType**, the view type of PinView, currently this will be one of `rectangle`, `line` or `none`.
 * **cursorVisible**, show cursor or not.
 * **cursorColor**, the cursor color.

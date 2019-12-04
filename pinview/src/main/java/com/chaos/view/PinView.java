@@ -34,9 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.method.MovementMethod;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,11 +78,15 @@ public class PinView extends AppCompatEditText {
     private int mViewType;
 
     private int mPinItemCount;
+    private int mCurrentItemCount;
+    private int mMaxItemCount;
 
     private int mPinItemWidth;
     private int mPinItemHeight;
     private int mPinItemRadius;
     private int mPinItemSpacing;
+
+    private Boolean mViewIsExtensible;
 
     private final Paint mPaint;
     private final TextPaint mAnimatorTextPaint = new TextPaint();
@@ -138,6 +140,8 @@ public class PinView extends AppCompatEditText {
 
         mViewType = a.getInt(R.styleable.PinView_viewType, VIEW_TYPE_RECTANGLE);
         mPinItemCount = a.getInt(R.styleable.PinView_itemCount, DEFAULT_COUNT);
+        mCurrentItemCount = mPinItemCount;
+        mMaxItemCount = a.getInt(R.styleable.PinView_maxItemCount, mPinItemCount);
         mPinItemHeight = (int) a.getDimension(R.styleable.PinView_itemHeight,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_item_size));
         mPinItemWidth = (int) a.getDimension(R.styleable.PinView_itemWidth,
@@ -153,6 +157,8 @@ public class PinView extends AppCompatEditText {
         mCursorWidth = a.getDimensionPixelSize(R.styleable.PinView_cursorWidth,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
 
+        mViewIsExtensible = a.getBoolean(R.styleable.PinView_isExtensible, false);
+
         mItemBackground = a.getDrawable(R.styleable.PinView_android_itemBackground);
         mHideLineWhenFilled = a.getBoolean(R.styleable.PinView_hideLineWhenFilled, false);
 
@@ -165,7 +171,7 @@ public class PinView extends AppCompatEditText {
 
         checkItemRadius();
 
-        setMaxLength(mPinItemCount);
+        setMaxLength(mViewIsExtensible ? mMaxItemCount : mPinItemCount);
         mPaint.setStrokeWidth(mLineWidth);
         setupAnimator();
 
@@ -240,10 +246,10 @@ public class PinView extends AppCompatEditText {
             // Parent has told us how big to be. So be it.
             width = widthSize;
         } else {
-            int boxesWidth = (mPinItemCount - 1) * mPinItemSpacing + mPinItemCount * mPinItemWidth;
+            int boxesWidth = (mCurrentItemCount - 1) * mPinItemSpacing + mCurrentItemCount * mPinItemWidth;
             width = boxesWidth + ViewCompat.getPaddingEnd(this) + ViewCompat.getPaddingStart(this);
             if (mPinItemSpacing == 0) {
-                width -= (mPinItemCount - 1) * mLineWidth;
+                width -= (mCurrentItemCount - 1) * mLineWidth;
             }
         }
 
@@ -274,6 +280,8 @@ public class PinView extends AppCompatEditText {
                 }
             }
         }
+
+        updateCurrentItemCount();
     }
 
     @Override
@@ -327,7 +335,7 @@ public class PinView extends AppCompatEditText {
 
     private void drawPinView(Canvas canvas) {
         int highlightIdx = getText().length();
-        for (int i = 0; i < mPinItemCount; i++) {
+        for (int i = 0; i < mCurrentItemCount; i++) {
             boolean highlight = isFocused() && highlightIdx == i;
             mPaint.setColor(highlight ? getLineColorForState(HIGHLIGHT_STATES) : mCurLineColor);
 
@@ -362,13 +370,13 @@ public class PinView extends AppCompatEditText {
                 } else {
                     drawText(canvas, i);
                 }
-            } else if (!TextUtils.isEmpty(getHint()) && getHint().length() == mPinItemCount) {
+            } else if (!TextUtils.isEmpty(getHint()) && getHint().length() == mCurrentItemCount) {
                 drawHint(canvas, i);
             }
         }
 
         // highlight the next item
-        if (isFocused() && getText().length() != mPinItemCount && mViewType == VIEW_TYPE_RECTANGLE) {
+        if (isFocused() && getText().length() < mPinItemCount && mViewType == VIEW_TYPE_RECTANGLE) {
             int index = getText().length();
             updateItemRectF(index);
             updateCenterPoint();
@@ -376,6 +384,11 @@ public class PinView extends AppCompatEditText {
             mPaint.setColor(getLineColorForState(HIGHLIGHT_STATES));
             drawPinBox(canvas, index);
         }
+    }
+
+    private void updateCurrentItemCount() {
+        if (getText().length() >= mPinItemCount)
+            mCurrentItemCount = getText().length();
     }
 
     private int getLineColorForState(int... states) {
@@ -403,10 +416,10 @@ public class PinView extends AppCompatEditText {
         if (mPinItemSpacing != 0) {
             drawLeftCorner = drawRightCorner = true;
         } else {
-            if (i == 0 && i != mPinItemCount - 1) {
+            if (i == 0 && i != mCurrentItemCount - 1) {
                 drawLeftCorner = true;
             }
-            if (i == mPinItemCount - 1 && i != 0) {
+            if (i == mCurrentItemCount - 1 && i != 0) {
                 drawRightCorner = true;
             }
         }
@@ -426,11 +439,11 @@ public class PinView extends AppCompatEditText {
         }
         boolean l, r;
         l = r = true;
-        if (mPinItemSpacing == 0 && mPinItemCount > 1) {
+        if (mPinItemSpacing == 0 && mCurrentItemCount > 1) {
             if (i == 0) {
                 // draw only left round
                 r = false;
-            } else if (i == mPinItemCount - 1) {
+            } else if (i == mCurrentItemCount - 1) {
                 // draw only right round
                 l = false;
             } else {
@@ -733,7 +746,7 @@ public class PinView extends AppCompatEditText {
      */
     public void setItemCount(int count) {
         mPinItemCount = count;
-        setMaxLength(count);
+        // setMaxLength(count);
         requestLayout();
     }
 
@@ -743,6 +756,26 @@ public class PinView extends AppCompatEditText {
      */
     public int getItemCount() {
         return mPinItemCount;
+    }
+
+    /**
+     * Sets the maximum possible number of items.
+     *
+     * @attr ref R.styleable#PinView_maxItemCount
+     * @see #getMaxItemCount()
+     */
+    public void setMaxItemCount(int count) {
+        mMaxItemCount = count;
+        setMaxLength(count);
+        requestLayout();
+    }
+
+    /**
+     * @return Returns the maximum possible number of items.
+     * @see #setMaxItemCount(int)
+     */
+    public int getMaxItemCount() {
+        return mMaxItemCount;
     }
 
     /**

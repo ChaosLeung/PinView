@@ -44,6 +44,8 @@
             app:cursorColor="@color/line_selected"
             app:cursorWidth="2dp"
             app:itemCount="5"
+            app:maxItemCount="8"
+            app:isExtensible="true"
             app:itemHeight="48dp"
             app:itemRadius="4dp"
             app:itemSpacing="0dp"
