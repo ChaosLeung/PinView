@@ -17,6 +17,8 @@
 package com.chaos.view.example;
 
 import android.os.Bundle;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.chaos.view.PinView;
 
@@ -28,7 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
  *         07/04/2017
  */
 
-public class SecondActivity extends AppCompatActivity {
+public class SecondActivity extends AppCompatActivity implements CheckBox.OnCheckedChangeListener {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,5 +39,15 @@ public class SecondActivity extends AppCompatActivity {
 
         ((PinView) findViewById(R.id.firstPinView)).setAnimationEnable(true);
         ((PinView) findViewById(R.id.secondPinView)).setAnimationEnable(true);
+        ((CheckBox) findViewById(R.id.firstIsPassword)).setOnCheckedChangeListener(this);
+        ((CheckBox) findViewById(R.id.secondIsPassword)).setOnCheckedChangeListener(this);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        if (compoundButton.getId() == R.id.firstIsPassword)
+            ((PinView) findViewById(R.id.firstPinView)).setIsPassword(isChecked);
+        else
+            ((PinView) findViewById(R.id.secondPinView)).setIsPassword(isChecked);
     }
 }

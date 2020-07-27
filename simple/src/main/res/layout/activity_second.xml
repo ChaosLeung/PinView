@@ -40,6 +40,15 @@
         android:textColor="@color/text_colors"
         app:itemRadius="@dimen/pv_pin_view_item_radius" />
 
+    <CheckBox
+        android:id="@+id/firstIsPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/firstPinView"
+        android:layout_alignBaseline="@+id/firstLabel"
+        android:checked="false"
+        android:text="p/w" />
+
     <TextView
         android:id="@+id/secondLabel"
         android:layout_width="wrap_content"
@@ -60,4 +69,14 @@
         android:cursorVisible="false"
         app:lineColor="@color/line_colors"
         app:itemRadius="@dimen/pv_pin_view_item_radius" />
+
+    <CheckBox
+        android:id="@+id/secondIsPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/secondPinView"
+        android:layout_alignBaseline="@+id/secondLabel"
+        android:checked="true"
+        android:text="p/w" />
+
 </RelativeLayout>

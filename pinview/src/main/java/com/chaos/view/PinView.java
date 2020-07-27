@@ -101,6 +101,7 @@ public class PinView extends AppCompatEditText {
 
     private ValueAnimator mDefaultAddAnimator;
     private boolean isAnimationEnable = false;
+    private boolean isPassword;
 
     private Blink mBlink;
     private boolean isCursorVisible;
@@ -171,6 +172,27 @@ public class PinView extends AppCompatEditText {
 
         super.setCursorVisible(false);
         disableSelectionMenu();
+
+        // preserve the legacy behavior: isPassword controlled by inputType
+        isPassword = isPasswordInputType(getInputType());
+    }
+
+    // preserve the legacy behavior: isPassword controlled by inputType
+    @Override
+    public void setInputType(int type) {
+        super.setInputType(type);
+        isPassword = isPasswordInputType(getInputType());
+        requestLayout();
+    }
+
+    /**
+     * new behavior: reveal or hide the pins programmatically
+     *
+     * @param enable True to hide, false to reveal the text
+     */
+    public void setIsPassword(boolean enable) {
+        isPassword = enable;
+        requestLayout();
     }
 
     @Override
@@ -357,7 +379,7 @@ public class PinView extends AppCompatEditText {
             }
 
             if (getText().length() > i) {
-                if (isPasswordInputType(getInputType())) {
+                if (isPassword) {
                     drawCircle(canvas, i);
                 } else {
                     drawText(canvas, i);
