@@ -1,4 +1,4 @@
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
 def siteUrl = 'https://github.com/ChaosLeong/PinView'
@@ -6,63 +6,76 @@ def issueUrl = 'https://github.com/ChaosLeong/PinView/issues'
 def gitUrl = 'git@github.com:ChaosLeong/PinView.git'
 
 group = "com.chaos.view"
-version = "1.4.3"
-
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                name 'PinView'
-                description 'Provides a widget for enter PIN/OTP/password etc.'
-                url siteUrl
-
-                packaging 'aar'
-
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-                }
-                developers {
-                    developer {
-                        id 'ChaosLeong'
-                        name 'Chaos Leong'
-                        email 'lgf42031@gmail.com'
-                    }
-                }
-            }
-        }
-    }
-}
+version = "2.0.0-SNAPSHOT"
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
+    archiveClassifier.set('sources')
     exclude '**/BuildConfig.class'
 }
 
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator)) + configurations.compile
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     failOnError false
     exclude '**/BuildConfig.class'
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+    }
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from javadoc.destinationDir
     exclude '**/BuildConfig.class'
 }
 
-artifacts {
-    archives javadocJar
-    archives sourcesJar
+afterEvaluate {
+    publishing {
+        publications {
+            pinview(MavenPublication) {
+                from components.release
+
+                artifact javadocJar
+                artifact sourcesJar
+
+                pom {
+                    name = 'PinView'
+                    description = 'Provides a widget for enter PIN/OTP/password etc.'
+                    url = siteUrl
+
+                    packaging = 'aar'
+
+                    licenses {
+                        license {
+                            name = 'The Apache Software License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    scm {
+                        connection = gitUrl
+                        developerConnection = gitUrl
+                        url = siteUrl
+                    }
+                    developers {
+                        developer {
+                            id = 'ChaosLeong'
+                            name = 'Chaos Leong'
+                            email = 'lgf42031@gmail.com'
+                        }
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                def releasesRepoUrl = "$buildDir/repos/releases"
+                def snapshotsRepoUrl = "$buildDir/repos/snapshots"
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            }
+        }
+    }
 }
 
 Properties properties = new Properties()
@@ -80,12 +93,5 @@ bintray {
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
         publish = true
-    }
-}
-
-javadoc {
-    options{
-        encoding "UTF-8"
-        charSet 'UTF-8'
     }
 }
