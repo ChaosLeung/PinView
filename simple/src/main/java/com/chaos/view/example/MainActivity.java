@@ -20,10 +20,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -79,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         pinView.setItemBackground(getResources().getDrawable(R.drawable.item_background));
         pinView.setItemBackgroundResources(R.drawable.item_background);
         pinView.setHideLineWhenFilled(false);
+
+        ((EditText) findViewById(R.id.password)).setTransformationMethod(new AsteriskPasswordTransformationMethod());
     }
 
     @Override
@@ -95,5 +101,47 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static class AsteriskPasswordTransformationMethod extends PasswordTransformationMethod {
+        @Override
+        public CharSequence getTransformation(CharSequence source, View view) {
+            return new PasswordCharSequence(source);
+        }
+
+        private static class PasswordCharSequence implements CharSequence {
+            private CharSequence mSource;
+
+            public PasswordCharSequence(CharSequence source) {
+                mSource = source; // Store char sequence
+            }
+
+            @Override
+            public char charAt(int index) {
+                return '*'; // This is the important part
+            }
+
+            @Override
+            public int length() {
+                return mSource.length();
+            }
+
+            @Override
+            public CharSequence subSequence(int start, int end) {
+                char[] buf = new char[end - start];
+
+                getChars(start, end, buf, 0);
+                return new String(buf);
+            }
+
+            @Override
+            public String toString() {
+                return subSequence(0, length()).toString();
+            }
+
+            public void getChars(int start, int end, char[] dest, int off) {
+                TextUtils.getChars(this, start, end, dest, off);
+            }
+        }
     }
 }
