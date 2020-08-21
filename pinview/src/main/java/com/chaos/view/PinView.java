@@ -31,10 +31,14 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.MovementMethod;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -168,7 +172,6 @@ public class PinView extends AppCompatEditText {
         mPaint.setStrokeWidth(mLineWidth);
         setupAnimator();
 
-        super.setCursorVisible(false);
         disableSelectionMenu();
 
         // preserve the legacy behavior: isPasswordHidden controlled by inputType
@@ -229,7 +232,7 @@ public class PinView extends AppCompatEditText {
         mDefaultAddAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float scale = (float) animation.getAnimatedValue();
+                float scale = (Float) animation.getAnimatedValue();
                 int alpha = (int) (255 * scale);
                 mAnimatorTextPaint.setTextSize(getTextSize() * scale);
                 mAnimatorTextPaint.setAlpha(alpha);
@@ -675,10 +678,11 @@ public class PinView extends AppCompatEditText {
                 == (EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 
-    /*@Override
+    @Override
     protected MovementMethod getDefaultMovementMethod() {
+        // we don't need arrow key.
         return DefaultMovementMethod.getInstance();
-    }*/
+    }
 
     /**
      * Sets the line color for all the states (normal, selected,
@@ -1096,28 +1100,16 @@ public class PinView extends AppCompatEditText {
 
     //region Selection Menu
     private void disableSelectionMenu() {
-        setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-                // no-op
-            }
-        });
-        setLongClickable(false);
+        setCustomSelectionActionModeCallback(new DefaultActionModeCallback());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setCustomInsertionActionModeCallback(new DefaultActionModeCallback() {
+                @Override
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    menu.removeItem(android.R.id.autofill);
+                    return true;
+                }
+            });
+        }
     }
 
     @Override
@@ -1128,5 +1120,28 @@ public class PinView extends AppCompatEditText {
 
     private int dpToPx(float dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    private static class DefaultActionModeCallback implements ActionMode.Callback {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+
+        }
     }
 }

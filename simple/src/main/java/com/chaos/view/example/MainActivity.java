@@ -25,10 +25,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.chaos.view.PinView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+
+import com.chaos.view.PinView;
 
 public class MainActivity extends AppCompatActivity {
 
