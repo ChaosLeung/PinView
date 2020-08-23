@@ -34,9 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.text.InputFilter;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.method.MovementMethod;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -101,7 +99,7 @@ public class PinView extends AppCompatEditText {
 
     private ValueAnimator mDefaultAddAnimator;
     private boolean isAnimationEnable = false;
-    private boolean isPassword;
+    private boolean isPasswordHidden;
 
     private Blink mBlink;
     private boolean isCursorVisible;
@@ -173,26 +171,34 @@ public class PinView extends AppCompatEditText {
         super.setCursorVisible(false);
         disableSelectionMenu();
 
-        // preserve the legacy behavior: isPassword controlled by inputType
-        isPassword = isPasswordInputType(getInputType());
+        // preserve the legacy behavior: isPasswordHidden controlled by inputType
+        isPasswordHidden = isPasswordInputType(getInputType());
     }
 
-    // preserve the legacy behavior: isPassword controlled by inputType
+    // preserve the legacy behavior: isPasswordHidden controlled by inputType
     @Override
     public void setInputType(int type) {
         super.setInputType(type);
-        isPassword = isPasswordInputType(getInputType());
+        isPasswordHidden = isPasswordInputType(getInputType());
+    }
+
+    /**
+     * new behavior: reveal or hide the pins programmatically
+     *
+     * @param hidden True to hide, false to reveal the text
+     */
+    public void setPasswordHidden(boolean hidden) {
+        isPasswordHidden = hidden;
         requestLayout();
     }
 
     /**
      * new behavior: reveal or hide the pins programmatically
      *
-     * @param enable True to hide, false to reveal the text
+     * @returns True if the pins are currently hidden
      */
-    public void setIsPassword(boolean enable) {
-        isPassword = enable;
-        requestLayout();
+    public boolean isPasswordHidden() {
+        return isPasswordHidden;
     }
 
     @Override
@@ -379,7 +385,7 @@ public class PinView extends AppCompatEditText {
             }
 
             if (getText().length() > i) {
-                if (isPassword) {
+                if (isPasswordHidden) {
                     drawCircle(canvas, i);
                 } else {
                     drawText(canvas, i);

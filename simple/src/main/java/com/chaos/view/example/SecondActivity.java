@@ -39,15 +39,15 @@ public class SecondActivity extends AppCompatActivity implements CheckBox.OnChec
 
         ((PinView) findViewById(R.id.firstPinView)).setAnimationEnable(true);
         ((PinView) findViewById(R.id.secondPinView)).setAnimationEnable(true);
-        ((CheckBox) findViewById(R.id.firstIsPassword)).setOnCheckedChangeListener(this);
-        ((CheckBox) findViewById(R.id.secondIsPassword)).setOnCheckedChangeListener(this);
+        ((CheckBox) findViewById(R.id.firstPasswordHidden)).setOnCheckedChangeListener(this);
+        ((CheckBox) findViewById(R.id.secondPasswordHidden)).setOnCheckedChangeListener(this);
     }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-        if (compoundButton.getId() == R.id.firstIsPassword)
-            ((PinView) findViewById(R.id.firstPinView)).setIsPassword(isChecked);
+        if (compoundButton.getId() == R.id.firstPasswordHidden)
+            ((PinView) findViewById(R.id.firstPinView)).setPasswordHidden(isChecked);
         else
-            ((PinView) findViewById(R.id.secondPinView)).setIsPassword(isChecked);
+            ((PinView) findViewById(R.id.secondPinView)).setPasswordHidden(isChecked);
     }
 }

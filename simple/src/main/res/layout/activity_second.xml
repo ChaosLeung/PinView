@@ -41,13 +41,13 @@
         app:itemRadius="@dimen/pv_pin_view_item_radius" />
 
     <CheckBox
-        android:id="@+id/firstIsPassword"
+        android:id="@+id/firstPasswordHidden"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/firstPinView"
         android:layout_alignBaseline="@+id/firstLabel"
         android:checked="false"
-        android:text="p/w" />
+        android:text="hidden" />
 
     <TextView
         android:id="@+id/secondLabel"
@@ -71,12 +71,12 @@
         app:itemRadius="@dimen/pv_pin_view_item_radius" />
 
     <CheckBox
-        android:id="@+id/secondIsPassword"
+        android:id="@+id/secondPasswordHidden"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/secondPinView"
         android:layout_alignBaseline="@+id/secondLabel"
         android:checked="true"
-        android:text="p/w" />
+        android:text="hidden" />
 
 </RelativeLayout>
