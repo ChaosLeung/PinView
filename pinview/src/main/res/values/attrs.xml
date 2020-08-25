@@ -22,6 +22,8 @@
 
     <declare-styleable name="PinView">
         <attr name="itemCount" format="integer" />
+        <attr name="maxItemCount" format="integer" />
+        <attr name="isExtensible" format="boolean" />
         <attr name="itemWidth" format="dimension" />
         <attr name="itemHeight" format="dimension" />
         <attr name="itemRadius" format="dimension" />
