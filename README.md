@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-   implementation 'com.chaos.view:pinview:1.4.3'
+   implementation 'com.chaos.view:pinview:1.4.4'
 }
 ```
 
@@ -86,6 +86,8 @@ pinView.setItemBackgroundColor(Color.BLACK);
 pinView.setItemBackground(getResources().getDrawable(R.drawable.item_background));
 pinView.setItemBackgroundResources(R.drawable.item_background);
 pinView.setHideLineWhenFilled(false);
+pinView.setPasswordHidden(false);
+pinView.setTransformationMethod(new PasswordTransformationMethod());
 ```
 
 ### Step 2:

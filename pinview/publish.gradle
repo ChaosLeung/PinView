@@ -6,7 +6,7 @@ def issueUrl = 'https://github.com/ChaosLeong/PinView/issues'
 def gitUrl = 'git@github.com:ChaosLeong/PinView.git'
 
 group = "com.chaos.view"
-version = "2.0.0-SNAPSHOT"
+version = "1.4.4"
 
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
@@ -36,6 +36,8 @@ afterEvaluate {
         publications {
             pinview(MavenPublication) {
                 from components.release
+
+                artifactId "pinview"
 
                 artifact javadocJar
                 artifact sourcesJar
@@ -85,6 +87,7 @@ bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
     configurations = ['archives']
+    publications = ['pinview']
     pkg {
         repo = "maven"
         name = "PinView"    //发布到JCenter上的项目名字
