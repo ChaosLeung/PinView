@@ -1,100 +1,139 @@
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'signing'
 
-def siteUrl = 'https://github.com/ChaosLeong/PinView'
-def issueUrl = 'https://github.com/ChaosLeong/PinView/issues'
-def gitUrl = 'git@github.com:ChaosLeong/PinView.git'
+ext["signing.keyId"] = ''
+ext["signing.password"] = ''
+ext["signing.secretKeyRingFile"] = ''
+ext["ossrhUsername"] = ''
+ext["ossrhPassword"] = ''
 
-group = "com.chaos.view"
-version = "1.4.4"
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set('sources')
-    exclude '**/BuildConfig.class'
-}
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    failOnError false
-    exclude '**/BuildConfig.class'
-    options {
-        encoding "UTF-8"
-        charSet 'UTF-8'
+File secretPropsFile = project.rootProject.file('local.properties')
+if (secretPropsFile.exists()) {
+    println "Found secret props file, loading props"
+    Properties p = new Properties()
+    p.load(new FileInputStream(secretPropsFile))
+    p.each { name, value ->
+        ext[name] = value
     }
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier.set('javadoc')
-    from javadoc.destinationDir
-    exclude '**/BuildConfig.class'
+def siteUrl = 'https://github.com/ChaosLeung/PinView'
+def issueUrl = 'https://github.com/ChaosLeung/PinView/issues'
+def gitUrl = 'git@github.com:ChaosLeung/PinView.git'
+
+group = "io.github.chaosleung"
+version = "1.4.4"
+
+def publication = publishing.publications.create("maven", MavenPublication)
+
+// Copy from ButterKnife
+android.libraryVariants.all { variant ->
+    Task javadocTask = task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
+        group = 'artifact'
+        description "Generates Javadoc for $variant.name"
+
+        // Source files from the variant
+        source = variant.javaCompiler.source
+
+        // Classpath from the variant + android.jar
+        String androidJar = android.getBootClasspath().join(File.pathSeparator)
+        classpath = variant.javaCompiler.classpath + files(androidJar)
+
+        // The Android online reference doesn't include package-list, so we have to use the local one
+        String packageListRef = "${android.sdkDirectory}/docs/reference/"
+        options.linksOffline 'http://d.android.com/reference/', packageListRef
+
+        // Exclude generated files
+        exclude '**/BuildConfig.java'
+        exclude '**/R.java'
+
+        // Output to a unique javadoc folder per variant
+        destinationDir = new File(project.docsDir, "javadoc-$variant.name")
+
+        if (JavaVersion.current().isJava8Compatible()) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+
+    // For official releases, don't prefix the name so the artifact is published correctly
+    // (Can't seem to modify it for publishing, for whatever reason...)
+    String classifierPrefix = (variant.name == 'release') ? '' : "$variant.name-"
+
+    Task javadocJarTask = task("generate${variant.name.capitalize()}JavadocJar", type: Jar, dependsOn: javadocTask) {
+        group = 'artifact'
+        description = "Generates Javadoc jar for $variant.name"
+
+        archiveClassifier.set("${classifierPrefix}javadoc")
+        from javadocTask.destinationDir
+    }
+
+    Task sourcesJarTask = task("generate${variant.name.capitalize()}SourcesJar", type: Jar) {
+        group = 'artifact'
+        description = "Generates sources jar for $variant.name"
+
+        archiveClassifier.set("${classifierPrefix}sources")
+        from variant.javaCompiler.source
+    }
+
+    if (variant.name == 'release') {
+        // There's a lot of "magic" around the archives configuration; easier
+        // just to embrace it rather than try to configure around it
+        publication.artifact(javadocJarTask)
+        publication.artifact(sourcesJarTask)
+    }
 }
 
 afterEvaluate {
-    publishing {
-        publications {
-            pinview(MavenPublication) {
-                from components.release
+    publication.with {
+        from components.release
 
-                artifactId "pinview"
+        artifactId "pinview"
 
-                artifact javadocJar
-                artifact sourcesJar
+        pom {
+            name = 'PinView'
+            description = 'Provides a widget for enter PIN/OTP/password etc.'
+            url = siteUrl
 
-                pom {
-                    name = 'PinView'
-                    description = 'Provides a widget for enter PIN/OTP/password etc.'
-                    url = siteUrl
+            packaging = 'aar'
 
-                    packaging = 'aar'
-
-                    licenses {
-                        license {
-                            name = 'The Apache Software License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-                    scm {
-                        connection = gitUrl
-                        developerConnection = gitUrl
-                        url = siteUrl
-                    }
-                    developers {
-                        developer {
-                            id = 'ChaosLeong'
-                            name = 'Chaos Leong'
-                            email = 'lgf42031@gmail.com'
-                        }
-                    }
+            licenses {
+                license {
+                    name = 'The Apache Software License, Version 2.0'
+                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
+            }
+            scm {
+                connection = gitUrl
+                developerConnection = gitUrl
+                url = siteUrl
+            }
+            developers {
+                developer {
+                    id = 'ChaosLeung'
+                    name = 'Chaos Leung'
+                    email = 'lgf42031@gmail.com'
                 }
             }
         }
+    }
+    publishing {
         repositories {
             maven {
-                def releasesRepoUrl = "$buildDir/repos/releases"
-                def snapshotsRepoUrl = "$buildDir/repos/snapshots"
+                name = "sonatype"
+
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
             }
         }
     }
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    publications = ['pinview']
-    pkg {
-        repo = "maven"
-        name = "PinView"    //发布到JCenter上的项目名字
-        websiteUrl = siteUrl
-        issueTrackerUrl = issueUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        publish = true
-    }
+signing {
+    sign publishing.publications
 }

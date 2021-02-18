@@ -7,7 +7,7 @@ Provides a widget for enter PIN/OTP/password etc on Android 4.1+ (API 16).
 
 ## Dependency
 
-PinView has been rebuilt based on AndroidX. If you are still using the android support library, please use 1.4.2.
+### ~~JCenter~~([Deprecated](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/))
 
 ``` Groovy
 repositories {
@@ -20,6 +20,22 @@ dependencies {
    implementation 'com.chaos.view:pinview:1.4.4'
 }
 ```
+
+### MavenCentral
+
+``` Groovy
+repositories {
+    maven {
+        mavenCentral()
+    }
+}
+
+dependencies {
+   implementation 'io.github.chaosleung:pinview:1.4.4'
+}
+```
+
+> Note that `MavenCentral` uses `io.github.chaosleung` as the group id
 
 ## Usage
 
