@@ -199,6 +199,11 @@ public class PinView extends AppCompatEditText {
         requestLayout();
     }
 
+    /**
+     * Set error state for the PinView
+     *
+     * @param error True to enable the error state, false to remove the error state
+     */
     public void setError(boolean error) {
         isError = error;
         requestLayout();
