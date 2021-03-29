@@ -71,8 +71,9 @@ public class PinView extends AppCompatEditText {
 
     private static final InputFilter[] NO_FILTERS = new InputFilter[0];
 
-    private static final int[] HIGHLIGHT_STATES = new int[]{
-            android.R.attr.state_selected};
+    private static final int[] HIGHLIGHT_STATES = new int[]{android.R.attr.state_selected};
+    private static final int[] FILLED_STATES = new int[]{R.attr.state_filled};
+    private static final int[] ERROR_STATES = new int[]{R.attr.state_error};
 
     private static final int VIEW_TYPE_RECTANGLE = 0;
     private static final int VIEW_TYPE_LINE = 1;
@@ -369,7 +370,16 @@ public class PinView extends AppCompatEditText {
         int highlightIdx = getText().length();
         for (int i = 0; i < mPinItemCount; i++) {
             boolean highlight = isFocused() && highlightIdx == i;
-            mPaint.setColor(highlight ? getLineColorForState(HIGHLIGHT_STATES) : mCurLineColor);
+            boolean filled = getText().length() > i;
+            if (getError() != null) {
+                mPaint.setColor(getLineColorForState(ERROR_STATES));
+            } else {
+                if (highlight) {
+                    mPaint.setColor(getLineColorForState(HIGHLIGHT_STATES));
+                } else {
+                    mPaint.setColor(filled ? getLineColorForState(FILLED_STATES) : mCurLineColor);
+                }
+            }
 
             updateItemRectF(i);
             updateCenterPoint();
@@ -901,6 +911,7 @@ public class PinView extends AppCompatEditText {
     }
 
     //region ItemBackground
+
     /**
      * Set the item background to a given resource. The resource should refer to
      * a Drawable object or 0 to remove the item background.

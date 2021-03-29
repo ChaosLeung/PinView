@@ -27,4 +27,6 @@
     <color name="line_selected">#E91E63</color>
     <color name="line_focused">#3F51B5</color>
     <color name="line_default">#C5CAE9</color>
+    <color name="line_filled">#C2D422</color>
+    <color name="line_error">#FFDE1A</color>
 </resources>
