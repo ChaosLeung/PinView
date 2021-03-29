@@ -104,6 +104,7 @@ public class PinView extends AppCompatEditText {
     private ValueAnimator mDefaultAddAnimator;
     private boolean isAnimationEnable = false;
     private boolean isPasswordHidden;
+    private boolean isError;
 
     private Blink mBlink;
     private boolean isCursorVisible;
@@ -195,6 +196,11 @@ public class PinView extends AppCompatEditText {
      */
     public void setPasswordHidden(boolean hidden) {
         isPasswordHidden = hidden;
+        requestLayout();
+    }
+
+    public void setError(boolean error) {
+        isError = error;
         requestLayout();
     }
 
@@ -370,8 +376,8 @@ public class PinView extends AppCompatEditText {
         int highlightIdx = getText().length();
         for (int i = 0; i < mPinItemCount; i++) {
             boolean highlight = isFocused() && highlightIdx == i;
-            boolean filled = getText().length() > i;
-            if (getError() != null) {
+            boolean filled = highlightIdx > i;
+            if (isError) {
                 mPaint.setColor(getLineColorForState(ERROR_STATES));
             } else {
                 if (highlight) {
