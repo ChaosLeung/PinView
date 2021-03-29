@@ -103,6 +103,7 @@ pinView.setItemBackground(getResources().getDrawable(R.drawable.item_background)
 pinView.setItemBackgroundResources(R.drawable.item_background);
 pinView.setHideLineWhenFilled(false);
 pinView.setPasswordHidden(false);
+pinView.setError(false);
 pinView.setTransformationMethod(new PasswordTransformationMethod());
 ```
 
