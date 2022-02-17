@@ -32,6 +32,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -336,7 +337,15 @@ public class PinView extends AppCompatEditText {
     }
 
     private void moveSelectionToEnd() {
-        setSelection(getText().length());
+
+        try {
+            Editable editable = getText();
+            if (editable != null && editable.length() > 0) {
+                setSelection(getText().length());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
